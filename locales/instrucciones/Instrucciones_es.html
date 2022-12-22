@@ -1,0 +1,99 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>Instrucciones</title>
+    <meta name="Generator" content="Microsoft Word 15 (filtered)">
+</head>
+
+<body style=" background-color:rgb(220, 249, 233); font-family:verdana;" lang="ES">
+        <img src="../../datos/logo.png" class="float-left" style="width:220px;height:90px;"
+          alt="SOM Energia Madrid"><b><span style="font-size:20.0pt;line-height:105%">&nbsp;&nbsp;&nbsp;
+            Instrucciones de uso del simulador de producción fotovoltaica
+            individual</span></b></p>
+      <h3> Paso 1- Localización:</h3>
+      <p>En este primer paso debemos identificar las areas en las que se pueden instalar paneles fotovoltaicos.</p>
+      <p>Mediante el desplazamiento en el mapa podrás localizar la zona de interes con la ayuda de los campos de localización o si las conoces introduciendo directamente las coordanadas latitud, longitud en el campo correspondiente.</p>
+      <p>Una vez visualizada la zona de trabajo deberás dibujar las areas, como mínimo una, en las que se pueden instalar los paneles.</p>
+      <p>El area se cerrará automaticamente cuando des un doble-click</p>
+      <p>Una vez definida el area veras que aparece una fila en la tabla que hay debajo del mapa en la que tienes los datos del area definida. Ahora procederemos a terminar de configurar los detalles de la misma</p>
+      <li>Nombre: En el caso de existir mas de una base es conveniente asignarles un nombre ya que la aplicación asignará paneles a cada una de ellas y mostrará esa asignación basada en el nombre.</li>
+      <li>Inclinación del tejado: Si los paneles se instalan sobre un tejado aqui podrás indicar el ángulo del tejado con respecto a la horizontal del lugar.</li>
+      <li>Inclinación del panel: Este es el ángulo con el que se instalarán los paneles medido a partir del tejado.</li>
+      <li>Inclinación óptima: En caso que quieras que la aplicación calcule las inclinaciones óptimas marca esta casilla y no introduzcas ningún valor en los campos anteriores.</li>
+      <li>Orientación: En este campo indicaremos la orientación que los paneles tendrán respecto al sur geográfico. En cuanto te posicionas en el campo verás que aparece una linea en el mapa que te premite indicar cual es la orientación posible de los paneles teniendo en cuenta las condiciones del tejado.</li>
+      <li>Angulos óptimos: Si quieres que la aplicación calcule todos los ángulos óptimos marca esta casilla y todos los anteriores serán ignorados</li>
+      <p>Una vez definida la localización y configuracion de la base donde se instalarán los paneles puedes dar a la flecha "Siguiente" para pasar el próximo paso.</p>
+
+     <h3>Paso 2 - Datos de consumo:</h3>
+      <p>Ahora procederemos a definir el perfil de consumo y la tarifa actual del contrato con la comercializadora desde la tabla.</p>
+      <li>Identificación del consumo: Aqui podrás dar un nombre al punto de consumo que estas definiendo.</li>
+      <li>Fuente: Existen dos formas de definir el perfil de consumo.
+      <ul><li>Si tienes fichero CSV con consumos horarios obtenidos de tu empresa distribuidora, selecciona la opción (Fichero de consumo individual) en cuyo caso deberas identificar el fichero en el campo "Fichero de consumo horario"</li>
+        <li>Si no lo tienes usa la opción REE perfil estandar. En esta caso deberás introducir el consumo anual de la finca en el campo "Consumo anual"</li>
+      </ul>
+      </li>
+      <p>Verás un mapa coloreado con tu perfil de consumo. Dando un click sobre el mismo podrás ver el perfil de consumo de un dia concreto.</p>
+      <li>Selección del tipo de tarifa (2.0TD o 3.0TD) que se utilizará en la simulación.<br> 
+          Una vez seleccionada la tarifa, la aplicación propone unos precios. Se proponen inicialmente los de SOM Energia. Si
+          no son los correctos se actualizarán a los valores que sean adecuados antes de realizar el cálculo.</li>
+      <p>Una vez alcanzado este punto puedes dar al botón “Siguiente”</p>
+
+      <h3>Paso 3 - Balance de energia</h3>
+      <p> En esta pestaña se observarán los resultados de la primera propuesta que realiza el sistema. En este caso el criterio de asignación de paneles es:
+        <li>Definir un número de paneles suficiente para generar la energia necesaria para cubrir el consumo de un año.</li>
+        <li>Verificar que la superficie disponible en las bases definidas en el paso 1 son suficientes para generar esa energia. Si no lo son se muestra un aviso.</li>
+        <li>Ir asignando paneles a las bases dando prioridad a las bases mas eficientes desde el punto de vista de rendimiento energetico</li>
+      <p>En el resto de la pestaña se pueden ver un conjunto de datos de interes obtenidos de esta configuración</p>
+      <p>En este momento puede ser interesante que observes el resto de las pestañas para evaluar la situación y antes de decidir cambiar el número de paneles o la potencia individaul de los mismos.</p>
+      <p>En todo caso desde esta pestaña podrás cambiar los paneles asignados a cada base según tu propio criterio. Solidar verificará que no puedes poner mas paneles que los que el area definida en el paso 1 para casa base permite.</p>
+      <h3>Paso 4 - Balance Económico</h3>
+      <p>Aqui puedes ver cual es el resultado desde el punto de vista económico financiero de la instalación de los paneles definidos en el paso 3.</p>
+      <p>Es importante destacar algunos campos existentes en esta pestaña:</p>
+      <li>El gasto anual, con o sin placas y por lo tanto el ahorro, esta altamente condicionado por las tarifas definidas en el paso 2 de consumo</li>
+      <li>Dada la volatilidad de los precios y las variaciones detectadas por regiones, es muy difícil estimar un precio de la instalación. Te proponemos uno con las estimaciones que tenemos pero lo correcto es que te asesores con un instalador. Podrás corregir el precio que te proponemos indicando un porcentaje positivo para incrementar el precio o negativo para disminuirlo en el campo "Correccion de precio en %"</li>
+      <p>Con los datos antes definidos la aplicación mostrará una tabla financiera con el estudio del retorno de la inversión esperado</p>
+      <p>Para esta tabla es fundamental definir en los campos mostrados a tal fin si existe algún tipo de subvención a aplicar de fondos Next Generation o la reducción del IBI que aplican algunos ayuntamientos.</p>
+      <h3>5 - Gráficos</h3>
+      <p> En esta pestaña se observan algunos gráficos que muestran el comportamiento mensual del sistema propuesto</p>
+      <h3>6 - Resumen</h3>
+      <p>Se muestra un resumen de todas las variables introducidas y calculadas para esta simulación</p>
+      <p>Se pueden hacer varios ciclos de pruebas cambiando la configuración de la instalación &lt;Paneles&gt; o &lt;Potencia por panel&gt;. Este cambio se puede hacer desde la pestaña &lt;Balance energía&gt;. La aplicación realizará los cálculos correspondientes de forma automática.</p>
+      <p>En la pestaña &lt;Parámetros&gt;, que se activa desde el icono de herramientas, se pueden actualizar varios parámetros utilizados en el cálculo. Los cambios realizados en esta pestaña se reflejarán en el próximo cálculo.</p>
+      <p>Desde el menú situado en la parte superior derecha se pueden seleccionar las siguientes opciones, de izquierda a derecha:</span></p>
+      <p class="MsoNormal"><span style="font-size:14.0pt;line-height:105%"><img
+            id="Imagen 1" src="Instrucciones_archivos/image001.png" alt="Imagen que contiene IconoDescripción generada automáticamente"
+            width="254" height="65"><br>
+        </span></p>
+      <table style="width: 1042px; height: 165px;">
+        <tbody>
+          <tr>
+            <td style="width: 78.5px;"><img src="Instrucciones_archivos/correo.png"
+                alt="Contacto / Sugerencias"><br>
+            </td>
+            <td>Formulario de contacto desde donde nos puedes enviar tus comentarios, así como informar de posibles errores o mejoras que consideres oportunas.</td>
+          </tr>
+          <tr>
+            <td><img src="Instrucciones_archivos/informe.png" alt="Salvar informe en PDF"><br>
+            </td>
+            <td>Genera un informe en PDF de la simulación activa.</td>
+          </tr>
+          <tr>
+            <td><img src="Instrucciones_archivos/parametros.png" alt="Parámetros"><br>
+            </td>
+            <td>Herramientas para cambiar alguno de los parámetros utilizados por la aplicación.</td>
+          </tr>
+          <tr>
+            <td><img src="Instrucciones_archivos/instrucciones.png" alt="Instrucciones"></td>
+            <td>Abre este documento.</td>
+          </tr>
+          <tr>
+            <td><img src="Instrucciones_archivos/ayuda.png"
+                alt="Ayuda"><br>
+            </td>
+            <td>Habilita un panel a la derecha de la pantalla con una guía explicativa de la pestaña en la que te encuentres en ese momento.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
