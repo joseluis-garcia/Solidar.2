@@ -68,7 +68,6 @@
 	"precios_LBL_duracion":"Duració (anys)",
 	"precios_LBL_VAN":"Valor actual net (VAN)",
 	"precios_LBL_TIR":"Taxa interna de retorn (TIR)",
-	"precios_msg_limiteAutoconsumo":"No hi ha subvencion EU amb consum menor del 80% de la producció.\nValor actual: {{autoconsumo}}%",
 	"precios_LBL_sinSubvencion":"Sense subvenció EU",
 
 	"precios_LBL_año":"Any",
@@ -77,8 +76,6 @@
 	"precios_LBL_ahorro":"Estalvi",
 	"precios_LBL_descuentoIBI":"Descompte IBI",
 	"precios_LBL_pendiente":"Pendent",
-	"proyecto_LBL_accion_mapa1":"Doble-clic al mapa indica la posició de la instal·lació (Podeu utilitzar camp <Localitzar> per a una cerca per adreça)",
-	"proyecto_LBL_accion_mapa2":"Segon doble clic per indicar l'orientació geogràfica dels panells",
 	"mapa_LBL_acimut":"Acimut",
 	"mapa_MSG_territorio":"L'aplicació només és vàlida per a Espanya",
 	"mapa_MSG_insular":"Compte, aquesta vostè en territori no peninsular. Les tarifes 3.0TD no són les correctes.",
@@ -98,12 +95,6 @@
 
 	"consumo_MSG_definirFicheroConsumo":"Heu de definir el fitxer de consum abans de continuar",
 	"consumo_MSG_definirPotenciaBaseREE":"Heu de definir una potència anual base per al perfil de REE",
-
-	"proyecto_LBL_potenciaBase":"Consum anual en kWh ",
-	"proyecto_LBL_perfilREE":"Perfil tipus REE",
-	"proyecto_LBL_metodoREE":"(Mètode de càlcul de perfils REE)",
-	"proyecto_LBL_guiaCSV":"(Fitxer de consum individual)",
-	"app_descripcion":"Aquí tindrem camps per identificar el projecte, incloent localització LAT-LONG que ens permetrà cercar les dades correctes a PVGIS",
 
 	"resultados_LBL_paneles":"Panells",
 	"resultados_LBL_potenciaPanel":"Potència per panell en kW",

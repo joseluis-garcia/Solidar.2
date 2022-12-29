@@ -15,11 +15,15 @@ const TCB = {
     pdfDoc: "",
     pasoWizard: 0,
 
+    // Analizar con multiples consumos
     idConsumo: 0,
 
-    nuevaLocalizacion : false,
+    map: "",
+    nombreProyecto: "",
+    territorio: "Peninsula",
+    pdf : "",
+
     consumoCreado : false,
-    localizacionDefinida : false,
     rendimientoCreado : false,
     instalacionCreada : false,
     produccionCreada : false,
@@ -27,6 +31,7 @@ const TCB = {
     economicoCreado : false,
 
     //Algunos valores por defecto
+    tarifaActiva : '2.0TD',
     // Estos precios son los de SOM a agosto 2022 y no deberían estar aqui.
     tarifas : { 
         '2.0TD': { 
@@ -114,14 +119,11 @@ const TCB = {
                 [6, 6, 6, 6, 6, 6, 6, 6, 2, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 2, 2],
             ]}
     },
-    tarifaActiva : '2.0TD',
-    nombreProyecto: "",
-    territorio: "Peninsula",
-    pdf : "",
+
+
     
     // Parametros por defecto
     parametros : {
-        conversionCO2 : 0.440,
         conversionAreakWp : 6,
         impuestoElectrico : 5.113,
         IVAenergia : 5.0,

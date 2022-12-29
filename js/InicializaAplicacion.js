@@ -5,7 +5,7 @@ import * as UTIL from "./Utiles.js";
 import Graficos from "./Graficos.js";
 import { initIdioma, traduce} from "./Idioma.js";
 import { gestionParametros } from "./gestionParametros.js";
-import {inicializaWizard} from "./Wizard.js";
+import { inicializaWizard} from "./Wizard.js";
 
 
 export default async function inicializaEventos() {
@@ -29,6 +29,7 @@ export default async function inicializaEventos() {
   TCB.graficos = new Graficos();
 
   //Inicializacion proceso i18n
+
   await initIdioma();
   document.getElementById("idioma").value = TCB.i18next.language.substring(0,2);
 
@@ -65,8 +66,6 @@ export default async function inicializaEventos() {
     };
     window.open('./locales/instrucciones/Instrucciones_'+tlng+'.html', '_blank');
   });
-
-
 
   // Boton muestra/oculta ayuda
   document.getElementById("ayuda").addEventListener("click", function handleChange(event) { 

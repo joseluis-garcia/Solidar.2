@@ -4,6 +4,8 @@ import * as UTIL from "./Utiles.js"
   //Botones del formulario de parametros para descargar matrices de los objetos de la aplicación
   //Estas funciones permiten descargar las tablas de la aplicación para verificacion o debug
   function inicializaEventosParametros() {
+
+/* Las funciones de dump de datos de produccion y rendimiento se deben redefinir al existir multiples bases
   document.getElementById("dumpConsumo").addEventListener("click", function handleChange(event) { 
     if (TCB.consumoCreado) dumpData("consumos.csv",TCB.consumo.idxTable, TCB.consumo.diaHora)});
   document.getElementById("dumpProduccion").addEventListener("click", function handleChange(event) { 
@@ -16,7 +18,7 @@ import * as UTIL from "./Utiles.js"
     if (TCB.economicoCreado) dumpData("precioSinPaneles.csv", TCB.economico.idxTable, TCB.economico.diaHoraPrecioOriginal)});
   document.getElementById("dumpPrecioConPaneles").addEventListener("click", function handleChange(event) { 
       if (TCB.economicoCreado) dumpData("precioConPaneles.csv", TCB.economico.idxTable, TCB.economico.diaHoraPrecioConPaneles)});
-
+ */
   // lectura del fichero de tarifas del servidor. Si falla se usan las de la TCB
   const ficheroTarifa = "./datos/tarifas.json";
   UTIL.debugLog("Tarifas leidas desde servidor:" + ficheroTarifa);

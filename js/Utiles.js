@@ -2,45 +2,53 @@ import TCB from "./TCB.js";
 
 var campos = {
 // Genericos
-  "energia": {"unidad":" kWh", "decimales":2},
-	"area": {"unidad": " m<sup>2</sup>", "decimales":2},
-  "potencia": {"unidad": " kWp", "decimales":2},
-  "porciento": {"unidad":"%", "decimales":2},
-  "peso": {"unidad":" Kg", "decimales": 2},
-  "dinero": {"unidad": " €", "decimales": 0},
+  "energia": {"unidad":" kWh", "decimales":2, "salvar":true, "mostrar":true},
+  "potencia": {"unidad": " kWp", "decimales":2, "salvar":true, "mostrar":true},
+  "porciento": {"unidad":"%", "decimales":2, "salvar":true, "mostrar":true},
+  "peso": {"unidad":" Kg", "decimales": 2, "salvar":true, "mostrar":true},
+  "dinero": {"unidad": " €", "decimales": 0, "salvar":true, "mostrar":true},
 // Especificos
-  "id": {"unidad":"", "decimales":0},
-	"potenciaMaxima": {"unidad": " kWp", "decimales":2},
-	"inclinacionPaneles": {"unidad":"º","decimales":2},
-	"inclinacionTejado": {"unidad":"º","decimales":2},
-	"acimut": {"unidad":"º","decimales":2},
-	"fechaInicio": {"unidad":""},
-	"fechaFin": {"unidad":""},
-	"inclinacion": {"unidad":"º", "decimales":2},
-	"rendimientoCreado": {"unidad": ""},
-	"unitarioTotal": {"unidad":" kWh", "decimales":2},
-  "energiaTotal": {"unidad":" kWh", "decimales":2},
-	"system_loss": {"unidad":"%", "decimales":2},
-	"technology": {"unidad":""},
-	"inclinacionOptimal": {"unidad":""},
-	"acimutOptimal": {"unidad":""},
-	"radiation_db": {"unidad":"", "decimales":0},
-	"meteo_db": {"unidad":""},
-	"year_min": {"unidad":"","decimales":0},
-	"year_max": {"unidad":"","decimales":0},
-	"numeroRegistros": {"unidad":"","decimales":0},
-	"potenciaUnitaria": {"unidad":" kWp","decimales":2},
-	"paneles": {"unidad":"", "decimales":0},
-  "potenciaTotal":{"unidad":" kWp", "decimales":2},
-  "lon":{"unidad":"", "decimales":2},
-  "lat":{"unidad":"", "decimales":2},
-  "VAN":{"unidad":" €", "decimales":2},
-  "TIR":{"unidad":"%", "decimales":2},
-  "participacion":{"unidad":"%", "decimales":2},
-  "maximoAnual": {"unidad":" kWh", "decimales":2},
-  "totalAnual": {"unidad":" kWh", "decimales":2},
-  "precioInstalacion":{"unidad":"€", "decimales":0},
-  "precioInstalacionCorregido":{"unidad":"€", "decimales":0},
+  "id": {"unidad":"", "decimales":0, "salvar":true, "mostrar":true},
+  "tipo": {"unidad":"", "decimales":0, "salvar":false, "mostrar":false},
+  "area": {"unidad": " m<sup>2</sup>", "decimales":2, "salvar":true, "mostrar":true},
+  "nombre": {"unidad":"", "decimales":0, "salvar":true, "mostrar":true},
+	"potenciaMaxima": {"unidad": " kWp", "decimales":2, "salvar":true, "mostrar":true},
+	"inclinacionPaneles": {"unidad":"º","decimales":2, "salvar":true, "mostrar":true},
+	"inclinacionTejado": {"unidad":"º","decimales":2, "salvar":true, "mostrar":true},
+	"acimut": {"unidad":"º","decimales":2, "salvar":true, "mostrar":true},
+	"fechaInicio": {"unidad":"", "salvar":true, "mostrar":true},
+	"fechaFin": {"unidad":"", "salvar":true, "mostrar":true},
+	"inclinacion": {"unidad":"º", "decimales":2, "salvar":true, "mostrar":true},
+	"rendimientoCreado": {"unidad": "", "salvar":false, "mostrar":false},
+  "produccionCreada": {"unidad": "", "salvar":false, "mostrar":false},
+  "requierePVGIS": {"unidad": "", "salvar":false, "mostrar":false},
+  "inclinacionOptima": {"unidad": "", "salvar":true, "mostrar":true},
+  "acimutOptimo": {"unidad": "", "salvar":true, "mostrar":true},
+  "angulosOptimos": {"unidad":"", "salvar":true, "mostrar":true},
+	"unitarioTotal": {"unidad":" kWh", "decimales":2, "salvar":true, "mostrar":true},
+  "energiaTotal": {"unidad":" kWh", "decimales":2, "salvar":true, "mostrar":true},
+	"system_loss": {"unidad":"%", "decimales":2, "salvar":false, "mostrar":true},
+	"technology": {"unidad":"", "salvar":false, "mostrar":true},
+	"inclinacionOptimal": {"unidad":"", "salvar":false, "mostrar":true},
+	"acimutOptimal": {"unidad":"", "salvar":false, "mostrar":true},
+	"radiation_db": {"unidad":"", "decimales":0, "salvar":false, "mostrar":true},
+	"meteo_db": {"unidad":"", "salvar":false, "mostrar":true},
+	"year_min": {"unidad":"","decimales":0, "salvar":false, "mostrar":true},
+	"year_max": {"unidad":"","decimales":0, "salvar":false, "mostrar":true},
+	"numeroRegistros": {"unidad":"","decimales":0, "salvar":false, "mostrar":true},
+	"potenciaUnitaria": {"unidad":" kWp","decimales":2, "salvar":true, "mostrar":true},
+	"paneles": {"unidad":"", "decimales":0, "salvar":true, "mostrar":true},
+  "potenciaTotal":{"unidad":" kWp", "decimales":2, "salvar":true, "mostrar":true},
+  "lon":{"unidad":"", "decimales":2, "salvar":true, "mostrar":true},
+  "lat":{"unidad":"", "decimales":2, "salvar":true, "mostrar":true},
+  "lonlat":{"unidad":"", "salvar":true, "mostrar":true},
+  "VAN":{"unidad":" €", "decimales":2, "salvar":false, "mostrar":true},
+  "TIR":{"unidad":"%", "decimales":2, "salvar":false, "mostrar":true},
+  "participacion":{"unidad":"%", "decimales":2, "salvar":true, "mostrar":true},
+  "maximoAnual": {"unidad":" kWh", "decimales":2, "salvar":true, "mostrar":true},
+  "totalAnual": {"unidad":" kWh", "decimales":2, "salvar":true, "mostrar":true},
+  "precioInstalacion":{"unidad":"€", "decimales":0, "salvar":true, "mostrar":true},
+  "precioInstalacionCorregido":{"unidad":"€", "decimales":0,"salvar":true, "mostrar":true}
 }
 
 export const nombreMes = [
@@ -86,7 +94,6 @@ function getQueryVariable(variable) {
 }
 
 function debugLog(msg, obj) {
-
   if (TCB.debug !== false) {
     console.log(msg);
     if (obj !== undefined && typeof obj === "object") {
@@ -318,7 +325,7 @@ function formularioAtributos (objeto, descripcion, yesBtnLabel = 'Yes', noBtnLab
             for (let i=0; i<vectorPropiedades.length; i++) {
                 if (vectorPropiedades[i].valor === "Objeto") {
                     tmpHTML += "<tr class='table-info text-center'><td colspan=2>" + i18next.t("objeto_"+vectorPropiedades[i].nombre) + "</td><tr>";
-                } else {
+                } else if (campos[vectorPropiedades[i].nombre] !== undefined && campos[vectorPropiedades[i].nombre].mostrar) {
                     tmpHTML += "<tr><td class='text-start'>" + i18next.t("propiedad_"+vectorPropiedades[i].nombre) + 
                     "</td><td class='text-end'>" +  formatoValor(vectorPropiedades[i].nombre, vectorPropiedades[i].valor) + "</td></tr>";
                 }
@@ -339,6 +346,13 @@ function formularioAtributos (objeto, descripcion, yesBtnLabel = 'Yes', noBtnLab
 }
 
 var prop_val;
+/** Función recursiva para obtener los valores de las propiedades de un objeto.
+ * El objeto base tiene nivel 0, si es objeto propiedad de otro objeto el nivel es 1
+ * 
+ * @param {object} objeto 
+ * @param {integer} nivel 
+ * @returns [{'nombre propiedad', 'valor propiedad}]
+ */
 function obtenerPropiedades ( objeto, nivel) {
   if (nivel == 0 ) prop_val = [];
   const propiedades = Object.getOwnPropertyDescriptors(objeto); 
@@ -414,6 +428,7 @@ export {
   muestraAtributos,
   obtenerPropiedades,
   mensaje,
-  muestra
+  muestra,
+  campos
 };
 window.dumpData = dumpData;

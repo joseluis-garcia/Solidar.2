@@ -127,11 +127,9 @@ function tablaBases ( tablaDonde) {
   
           // Rendimiento Unitario
           cell = row.insertCell();
-          //cell.innerHTML = '<label class="text-end" id="H'+id+'">' + formatNumber(TCB.bases[i].rendimiento.unitarioTotal, 2) + '</label>';
           cell.innerHTML = '<label class="text-end" id="H'+id+'">' + formatoValor('unitarioTotal', (TCB.bases[i].rendimiento.unitarioTotal)) + '</label>';
           // Potencia disponible en base al area real
           cell = row.insertCell();
-          //cell.innerHTML = '<label id="P'+id+'">' + formatNumber(TCB.bases[i].potenciaMaxima, 2) + '</label>';
           cell.innerHTML = '<label id="P'+id+'">' + formatoValor('potenciaMaxima', TCB.bases[i].potenciaMaxima) + '</label>';
           // Paneles
           cell = row.insertCell();

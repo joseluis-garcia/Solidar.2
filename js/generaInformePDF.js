@@ -1,6 +1,5 @@
 import TCB from "./TCB.js";
-import {copiaTablaLimpia, formatNumber } from "./Muestra.js";
-import {suma, obtenerPropiedades, formatoValor} from "./Utiles.js";
+import {suma, obtenerPropiedades, formatoValor, campos} from "./Utiles.js";
 
 var doc;
 function newDoc() {
@@ -17,42 +16,60 @@ async function generaInformePDF() {
   nuevaLinea('Cabecera',null, null, 'main_LBL_titulo');
   nuevaLinea('Titulo', i++, null, 'informe_LBL_datosLocalizacionAportados');
 
-    var bodyTable = [];
-    let vectorPropiedades = [];
 
+  function createArray(length) {
+    var arr = new Array(length || 0),
+        i = length;
 
-      for (let k=0; k<TCB.bases.length; k++) {
-        vectorPropiedades = obtenerPropiedades ( TCB.bases[k], 0);
-        for (let i=0; i<vectorPropiedades.length; i++) {
-          if (k === 0) {
-            let bodyRow = [];
-            bodyTable.push(bodyRow);
-            if (vectorPropiedades[i].valor === "Objeto") 
-              bodyTable[i].push("*" + i18next.t("objeto_"+vectorPropiedades[i].nombre));
-            else
-              bodyTable[i].push(i18next.t("propiedad_"+vectorPropiedades[i].nombre));
+    if (arguments.length > 1) {
+        var args = Array.prototype.slice.call(arguments, 1);
+        while(i--) arr[length-1 - i] = createArray.apply(this, args);
+    }
+
+    return arr;
+  } 
+    const propiedades = obtenerPropiedades ( TCB.bases[0], 0);
+    var dTabla = createArray(propiedades.length, TCB.bases.length);
+
+    for(let k=0; k<TCB.bases.length; k++) {
+      var i = 0;
+      const propiedades = obtenerPropiedades ( TCB.bases[k], 0);
+      propiedades.forEach ( (p) => {
+/*         let oFila = {"nombre":"", "valores":[]};
+        dTabla[i] = oFila;  */
+
+        if (p.valor === "Objeto") {
+          if (k == 0) {
+            dTabla[i][k] = "*"+i18next.t("objeto_"+ p.nombre);
+            dTabla[i++][k+1] = "***";
+          } else {
+            dTabla[i++][k+1] = "***";
           }
-          bodyTable[i].push(formatoValor(vectorPropiedades[i].nombre, vectorPropiedades[i].valor));
+        } else if (campos[p.nombre].mostrar) {
+          if (k == 0) {
+            dTabla[i][k] = i18next.t("propiedad_"+ p.nombre);
+            dTabla[i++][k+1] = formatoValor(p.nombre, p.valor);
+          } else {
+            dTabla[i++][k+1] = formatoValor(p.nombre, p.valor);
+          }     
         }
-      }
+      });
+    }
+    let dBody = dTabla.slice(0, i);
+    console.log(dBody);
 
 doc.autoTable({
   willDrawCell: (data) => {
-     if (data.cell.raw[0] === '*') {
-      data.cell.text = data.cell.raw.substring(1);
-      doc.setFillColor(110,214,84);
-     // doc.rect(data.settings.margin.left, row.y, data.table.width, 20, 'F');
-/*       doc.autoTableText("", data.settings.margin.left + data.table.width / 2, data.row.y + data.row.height / 2, {
-                    halign: 'center',
-                    valign: 'middle'
-                }); */
-      data.cell.colSpan = TCB.bases.length + 1;
-    } else if (data.cell.raw === "Objeto") {
+     if (data.cell.raw === '***') {
       data.cell.text = '';
       doc.setFillColor(110,214,84);
+    } else if (data.cell.raw[0] === "*") {
+      data.cell.text = data.cell.raw.substring(1);
+      doc.setFillColor(110,214,84);
+      data.cell.colSpan = TCB.bases.length + 1;
     }
   },
-  body: bodyTable,
+  body: dBody,
   startY: 50,
   styles: {halign: 'right', lineWidth: 1},
   columnStyles: { 0: { halign: 'left'} },
@@ -60,88 +77,11 @@ doc.autoTable({
   alternateRowStyles: {fillColor: [229,255,204]},
 })
 doc.addPage();
- /*  let dTabla = [];
-  for (let k=0; k<TCB.bases.length; k++) {
-    let vectorPropiedades = obtenerPropiedades ( TCB.bases[k], 0);
-    for (let i=0; i<vectorPropiedades.length; i++) {
 
-      if (k === 0) {
-        let oFila = {"nombre":"", "valores":""};
-        if (vectorPropiedades[i].valor === "Objeto") 
-        oFila.nombre = i18next.t("objeto_"+vectorPropiedades[i].nombre);
-        else
-        oFila.nombre = i18next.t("propiedad_"+vectorPropiedades[i].nombre);
-
-        oFila.valores = [];
-        dTabla.push(oFila);
-      }
-
-      if (vectorPropiedades[i].valor === "Objeto") {
-        dTabla[i].valores.push("***");
-      } else {
-        dTabla[i].valores.push(formatoValor(vectorPropiedades[i].nombre, vectorPropiedades[i].valor))
-      }
-    }
-  } 
-
- */
-/*   let nTabla = document.createElement('table');
-  let nFila;
-  let nCelda;
-  for (let i=0; i<dTabla.length; i++){
-    if (dTabla[i].valores[0] === "***") {
-      nFila = document.createElement('theader');
-      nCelda = document.createElement('th');
-      nCelda.innerHTML = "<h4>"+dTabla[i].nombre+"</h4>";
-      nCelda.setAttribute("colspan", TCB.bases.lenght+1);
-      //nCelda.setAttribute("style","text-align:center");
-    } else {
-      nFila = document.createElement('tr');
-      nCelda = document.createElement('td');
-      nCelda.innerHTML = dTabla[i].nombre;
-    }
-    nFila.appendChild(nCelda);
-    for (let j=0; j<TCB.bases.length; j++){
-      let nCelda1 = document.createElement('td');
-      nCelda1.innerHTML = (dTabla[i].valores[j] === "***") ? " " : dTabla[i].valores[j];
-      nFila.appendChild(nCelda1);
-    }
-    nTabla.appendChild(nFila);
-  } */
-    //htdoc.appendChild(nTabla);
-
-/* 
-    nuevaLinea('Dato', i++, 'informe_LBL_localizacion', TCB.territorio,"");
-    nuevaLinea('Dato', i++, 'proyecto_LBL_lonlat', formatNumber(TCB.rendimiento.lon, 4) + ", " + formatNumber(TCB.rendimiento.lat,4), "");
-    nuevaLinea('Dato', i++, 'proyecto_LBL_inclinacion', formatNumber(TCB.rendimiento.inclinacion,0 ), "º");
-    nuevaLinea('Dato', i++, 'mapa_LBL_acimut', formatNumber(TCB.rendimiento.acimut, 0), "º"); 
-  
-/*     nuevaLinea('Dato', i++, 'Radiation DB', TCB.rendimiento.radiation_db, "");
-    nuevaLinea('Dato', i++, 'Meteo DB', TCB.rendimiento.meteo_db, "");
-    nuevaLinea('Dato', i++, 'year_min', formatNumber(TCB.rendimiento.year_min, 0), "");
-    nuevaLinea('Dato', i++, 'year_max', formatNumber(TCB.rendimiento.year_max, 0), "");
-    nuevaLinea('Pie', pagina++, true);
-  
-    i = 1;
-    nuevaLinea('Cabecera',null, null, 'main_LBL_titulo');
-    nuevaLinea('Titulo', i++, null, 'informe_LBL_datosInstalacionAnalizada');
-    nuevaLinea('Dato', i++, 'resultados_LBL_paneles', formatNumber(TCB.instalacion.paneles, 0) , "");
-    nuevaLinea('Dato', i++, 'resultados_LBL_potenciaPanel', formatNumber(TCB.instalacion.potenciaUnitaria, 3), "kW");
-    nuevaLinea('Dato', i++, 'resultados_LBL_potenciaDisponible', formatNumber(TCB.instalacion.potenciaTotal, 2), "kWp");
-    nuevaLinea('Dato', i++, 'proyecto_LBL_inclinacion', formatNumber(TCB.rendimiento.inclinacion, 2), "º");
-    nuevaLinea('Dato', i++, 'mapa_LBL_acimut', formatNumber(TCB.rendimiento.acimut, 2), "º");
-    nuevaLinea('Dato', i++, 'resultados_LBL_system_loss', formatNumber(TCB.rendimiento.system_loss, 2), "%");
-    nuevaLinea('Dato', i++, 'resultados_LBL_technology', TCB.rendimiento.technology, ""); */
 
   var i = 1;
   nuevaLinea('Cabecera',null, null, 'main_LBL_titulo');
   nuevaLinea('Titulo',i++, null, 'informe_LBL_datosDeConsumo');
-/*     if (document.getElementById('desdeFichero').checked) {
-    nuevaLinea('Normal', i++, null, i18next.t('informe_LBL_fichero') + TCB.consumo.csvFile.name);
-  } else { // es una carga de perfil REE
-    nuevaLinea('Normal', i++, null, i18next.t('proyecto_LBL_perfilREE') + " " + TCB.tarifaActiva + 
-                                    i18next.t('informe_LBL_paraPotenciaAnual') + TCB.consumo.consumoBase + " kWh");
-  } */
   nuevaLinea('Dato', i++, 'informe_LBL_localizacion', TCB.territorio,"");
   nuevaLinea('Dato', i++, 'informe_LBL_numeroRegistros', formatNumber(TCB.consumo.numeroRegistros, 0), "");
   nuevaLinea('Dato', i++, 'informe_LBL_desde', TCB.consumo.fechaInicio.toLocaleDateString(), "");
@@ -294,17 +234,15 @@ function nuevaLinea( tipo, linea, propiedad, valor, unidad) {
       case "Cabecera":
           doc.text(i18next.t(valor), margenIzquierdo, _hdr, {align: 'center'});
           doc.setFontSize(_font['Normal']);
-          doc.text(i18next.t("proyecto_LBL_nombre_proyecto") + TCB.nombreProyecto, margenIzquierdo, _hdr + 7);
+          doc.text(i18next.t("proyecto_LBL_nombre_proyecto") + " " + TCB.nombreProyecto, margenIzquierdo, _hdr + 7);
         break;
       case "Titulo":
-
           doc.text(i18next.t(valor), margenIzquierdo, renglon);
           doc.setLineWidth( 1 );
           doc.line(margenIzquierdo, renglon + 1, margenDerecho, renglon  + 1);
         break;
       case "Normal":
           doc.text( valor, margenIzquierdo, renglon);
-
         break;
       case "Dato":
           doc.setLineWidth( 0.1 );
@@ -332,6 +270,16 @@ function nuevaLinea( tipo, linea, propiedad, valor, unidad) {
           if (propiedad) doc.addPage();
           break;
 
+    }
+  }
+  function formatNumber( numero, decimal) {
+    if (decimal !== undefined) {
+      //Segun la definción ISO (https://st.unicode.org/cldr-apps/v#/es/Symbols/70ef5e0c9d323e01) los numeros en 'es' no llevan '.' si no hay mas de dos 
+      //digitos delante del '.' Minimum Grouping Digits = 2. Como no estoy de acuerdo con este criterio en el caso de 'es' lo cambio a 'ca' que funciona bien
+      let lng = TCB.i18next.language.substring(0,2) === 'es' ? 'ca' : TCB.i18next.language.substring(0,2);
+      return numero.toLocaleString(lng, {maximumFractionDigits: decimal, minimumFractionDigits: decimal});
+    } else {
+      return numero.toLocaleString();
     }
   }
 

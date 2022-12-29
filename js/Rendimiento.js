@@ -102,6 +102,7 @@ export default class Rendimiento {
         this.meteo_db = PVGISdata.inputs.meteo_data.meteo_db;
         this.year_min = PVGISdata.inputs.meteo_data.year_min;
         this.year_max = PVGISdata.inputs.meteo_data.year_max;
+        console.log(PVGISdata.inputs);
 
         PVGISdata.outputs.hourly.forEach((element) => {
           //Para gestionar fechas en formato dd/mm/aaaa como vienen en el CSV debamos invertir a aaaa/mm/dd en javascript

@@ -14,7 +14,6 @@ import BaseSolar from "./BaseSolar.js";
 import Consumo from "./Consumo.js";
 
 var map;
-
 var origenDatosSolidar;
 var draw; 
 var featID = 0;  //Identificador unico de cada objeto
@@ -104,7 +103,6 @@ function inicializaEventos () {
       return false;
     } else {
       centraMapa(campoLONLAT.value);
-      TCB.nuevaLocalizacion = true;
     }
   });
 
@@ -147,7 +145,7 @@ function inicializaEventos () {
   SAT.setVisible(false);
 
   // Creación del mapa
-  map = new ol.Map({
+  TCB.map = new ol.Map({
     interactions: ol.interaction.defaults({ doubleClickZoom: false }),  //Desabilitamos el zoom in del doubleclick
     controls: ol.control.defaults({ attribution: false }).extend([attribution]),
     target: "map",
@@ -157,6 +155,7 @@ function inicializaEventos () {
       zoom: 18,  //6
     }),
   });
+  map = TCB.map
   
   map.addLayer(SAT);
   map.addLayer(OSM);
@@ -383,8 +382,13 @@ function nuevaFilaEnTablaAreaSolar(base) {
   cell = row.insertCell();
   cell.id = 'AreaSolar.acimut.'+base.id;
   cell.setAttribute( "valor", "");
-  cell.innerHTML = '<input type="number" class="text-end" style="width: 100px;" value="" readonly>';
+  tmpHTML =  '<input type="number" class="text-end" style="width: 100px;" value="" id="acimutNumber">';
+  tmpHTML += '<button class="btn tDyn" id="acimutButton" type="Button" data-bs-toggle="tooltip" data-bs-placement="top" name="mapa_TT_botonAcimut">';
+  tmpHTML += '<i class="fa fa-compass"></i></button>'
+  cell.innerHTML = tmpHTML;
+  document.getElementById("acimutButton").title = i18next.t("mapa_TT_botonAcimut");
   cell.addEventListener('click', (evt) => {acimutAreaSolar (evt.target)});
+  cell.addEventListener('change', (evt) => {acimutAreaSolar (evt.target)});
 
   // Boton para definir el acimut optimo
   cell = row.insertCell();
@@ -425,7 +429,7 @@ function modificaAcimutAreaSolar ( acimutAreaSolar ) {
   componente = "AreaSolar.acimut."+featIDActivo;
   document.getElementById(componente).firstChild.value = acimut.toFixed(2);
   baseActiva.acimut = acimut;
-  baseActiva.acimutOptimo = false;
+  //baseActiva.acimutOptimo = false;
   componente = 'AreaSolar.angulosOptimos.' + featIDActivo;
   document.getElementById(componente).firstChild.checked = false;
 
@@ -637,18 +641,27 @@ function inclinacionTejado( evento) {
   document.getElementById(componente).innerHTML = UTIL.formatoValor('potenciaMaxima', nuevaPotencia);
 }
 
-/** LLamada desde la tabla area al seleccionar el campo Acimut de una fila
+/** LLamada desde la tabla area al seleccionar el campo Acimut de una fila.
+ * El acimut puede ser definido de dos maneras, mediante input number en cuyo caso el evento viene con nodeName => INPUT o
+ * desde el boton que esta en la misma celda en cuyo caso se activa el dibujo de acimut
  * 
  * @param {DOM event*} evento 
  */
  function acimutAreaSolar(evento){
   setActivo(evento);
   baseActiva.requierePVGIS = true;
+  //baseActiva.acimutOptimo = false;
+  baseActiva.angulosOptimos = false;
   componente = 'AreaSolar.angulosOptimos.' + featIDActivo; 
   document.getElementById(componente).firstChild.checked = false;
-  baseActiva.angulosOptimos = false;
-  geometriaActiva = {'nombre' : 'acimut', 'tipo': 'LineString'};
-  addInteraction();
+  if (evento.nodeName === "INPUT") {
+    baseActiva.acimut = evento.value;
+    componente = 'AreaSolar.acimut.' + featIDActivo;
+    origenDatosSolidar.removeFeature(origenDatosSolidar.getFeatureById(componente)); //Si habia un acimut dibujado lo borramos
+  } else {
+    geometriaActiva = {'nombre' : 'acimut', 'tipo': 'LineString'};
+    addInteraction();
+  }
 }
 
 /**
@@ -681,7 +694,7 @@ function angulosOptimos (evento) {
 };
 
 function addInteraction() {
-  UTIL.mensaje("accionMapa", i18next.t("mapa_MSG_"+geometriaActiva.tipo));
+  UTIL.mensaje("accionMapa", "mapa_MSG_"+geometriaActiva.tipo);
   map.removeInteraction(draw);
   if (geometriaActiva.nombre !== 'nada'){  
     draw = new ol.interaction.Draw({

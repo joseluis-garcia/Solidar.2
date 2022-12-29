@@ -60,3 +60,8 @@
 - Modificada lógica para poder indicar la localizacion por latlon directamente en el campo. Antes no funcionaba.
 - Incorporados tooltips de pestañas 1-Localización y 2-Consumo
 - Cambio en la tabla financiera para que incluya todos los años en los que hay subvención de IBI aunque se hubiera alcanzado el retorno antes.
+
+## 20221229 - Primera version Solidar.2
+- Cambiada toda la arquitectura de base para soportar multiples areas y multiples consumos aunque en esta version no se admiten multiples consumos.
+- Cambiado todo el codigo de los reports
+

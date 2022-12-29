@@ -88,7 +88,7 @@
     <!-- jspdf -->
 <!--     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.8.0/html2pdf.bundle.min.js"></script> -->
     <script src="./js/jspdf.debug.js"></script>
-   <script src='https://html2canvas.hertzen.com/dist/html2canvas.min.js'></script>
+    <script src='https://html2canvas.hertzen.com/dist/html2canvas.min.js'></script>
     <script src="https://unpkg.com/jspdf-autotable@3.5.22/dist/jspdf.plugin.autotable.js"></script>
 
     <!-- Funcion propia de gestion entre DOM y clases -->
@@ -127,7 +127,11 @@
             <button class="btn btn-default tDyn pull-right" type="button" id="contacto" data-bs-toggle="modal" 
             data-bs-target="#formularioContacto" data-bs-toggle="tooltip" data-bs-placement="top" name="main_TT_contacto">
             <span class="fa fa-envelope-o"></span>
-            </button>
+
+<!--             Boton de guardar por ahora desactivado
+            <button class="btn btn-default tDyn pull-right" type="button" id="guardar"
+            data-bs-toggle="tooltip" data-bs-placement="top" name="main_TT_guardar"><span class="fa fa-floppy-o"></span>
+            </button> -->
         </div>
         <div class="col-md-1 pull-right">
             <select class="form-select col-md-2" id="idioma" >
@@ -240,7 +244,7 @@
                                             data-bs-toggle="tooltip" data-bs-placement="top" name="mapa_TT_maximaPotencia"></th>
                                         <th scope="col" class="tDyn" data-i18n="mapa_LBL_inclinacion" 
                                             data-bs-toggle="tooltip" data-bs-placement="top" name="mapa_TT_inclinacion"></th>
-                                        <th scope="col" class="tDyn" data-i18n="mapa_LBL_inclinacionOptimo" 
+                                        <th scope="col" class="tDyn" data-i18n="mapa_LBL_inclinacionOptima" 
                                             data-bs-toggle="tooltip" data-bs-placement="top" name="mapa_TT_inclinacionOptima"></th>
                                         <th scope="col" class="tDyn" data-i18n="mapa_LBL_acimut" 
                                             data-bs-toggle="tooltip" data-bs-placement="top" name="mapa_TT_acimut"></th>
@@ -528,13 +532,13 @@
                         </div>
                         <div class="form-group row justify-content-center">
                             <label class="col-md-2 tDyn" data-i18n="resultados_LBL_kgCO2AnualAhorradoRenovable"
-                                data-bs-toggle="tooltip" data-bs-placement="top" name="resultados_TT_kgCO2AnualAhorrado">
+                                data-bs-toggle="tooltip" data-bs-placement="top" name="resultados_TT_kgCO2AnualAhorradoRenovable">
                             </label>
                             <div class="col-md-2 text-end" id="CO2AnualRenovable">
                                 <a data-i18n="resultados_LBL_pendienteCalculo"></a>
                             </div>
                             <label class="col-md-2 offset-md-1 tDyn" data-i18n="resultados_LBL_kgCO2AnualAhorradoNoRenovable"
-                            data-bs-toggle="tooltip" data-bs-placement="top" name="resultados_TT_kgCO2AnualAhorrado">
+                            data-bs-toggle="tooltip" data-bs-placement="top" name="resultados_TT_kgCO2AnualAhorradoNoRenovable">
                             </label>
                             <div class="col-md-2 text-end" id="CO2AnualNoRenovable">
                                 <a data-i18n="resultados_LBL_pendienteCalculo"></a>
@@ -603,7 +607,7 @@
                         </div>
 
                         <div class="row">
-                            <label for="subvencionEU" class="col-md-2 offset-sm-4 col-form-label" data-i18n="precios_LBL_subvencionEU"
+                            <label for="subvencionEU" class="col-md-2 offset-sm-4 col-form-label tDyn" data-i18n="precios_LBL_subvencionEU"
                             data-bs-toggle="tooltip" data-bs-placement="top" name="precios_TT_subvencionEU"></label>
                             <div class="col-md-3">
                                 <select class="form-select" id="subvencionEU"> <!-- Tiene evento de cambio asociado en Dispatcher-->
@@ -620,13 +624,13 @@
                             <table id="financiero" class="table table-sm table-striped table-bordered text-end border-primary table-success">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th scope="col col-md-1" data-i18n="precios_LBL_año"></th>
-                                        <th scope="col" data-i18n="precios_LBL_previo"></th>
-                                        <th scope="col" data-i18n="precios_LBL_inversion"></th>
-                                        <th scope="col" data-i18n="precios_LBL_ahorro"></th>
-                                        <th scope="col" data-i18n="precios_LBL_descuentoIBI"></th>
-                                        <th scope="col" data-i18n="precios_LBL_subvencionEU"></th>
-                                        <th scope="col" data-i18n="precios_LBL_pendiente"></th>
+                                        <th scope="col col-md-1" data-i18n="precios_LBL_año" class="tDyn" data-bs-toggle="tooltip" data-bs-placement="top" name="precios_TT_año"></th>
+                                        <th scope="col" data-i18n="precios_LBL_previo" class="tDyn" data-bs-toggle="tooltip" data-bs-placement="top" name="precios_TT_previo"></th>
+                                        <th scope="col" data-i18n="precios_LBL_inversion" class="tDyn" data-bs-toggle="tooltip" data-bs-placement="top" name="precios_TT_inversion"></th>
+                                        <th scope="col" data-i18n="precios_LBL_ahorro" class="tDyn" data-bs-toggle="tooltip" data-bs-placement="top" name="precios_TT_ahorro"></th>
+                                        <th scope="col" data-i18n="precios_LBL_descuentoIBI" class="tDyn" data-bs-toggle="tooltip" data-bs-placement="top" name="precios_TT_descuentoIBI"></th>
+                                        <th scope="col" data-i18n="precios_LBL_subvencionEU" class="tDyn" data-bs-toggle="tooltip" data-bs-placement="top" name="precios_TT_subvencionEU"></th>
+                                        <th scope="col" data-i18n="precios_LBL_pendiente" class="tDyn" data-bs-toggle="tooltip" data-bs-placement="top" name="precios_TT_pendiente"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -701,42 +705,48 @@
                 <div class="modal-body" style="background-color:rgb(169, 248, 206)">
                     <div class="container-fluid">
                         <div class="row mb-3">
-                            <label for="conversionCO2" class="col-md-5 col-form-label" data-i18n="parametros_LBL_kgCO2AnualPorkWh"></label>
-                            <div class="col-md-3"><input type="number" min="0" step="any" class="form-control " id="conversionCO2"></div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="conversionAreakWp" class="col-md-5 col-form-label" data-i18n="parametros_LBL_conversionAreakWp"></label>
-                            <div class="col-md-3"><input type="number" min="0" step="any" class="form-control " id="conversionAreakWp"></div>
+                            <label for="conversionAreakWp" class="col-md-5 col-form-label tDyn" data-i18n="parametros_LBL_conversionAreakWp"
+                            data-bs-toggle="tooltip" data-placement="top" name="parametros_TT_conversionAreakWp"></label>
+                            <div class="col-md-3">
+                                <input type="number" min="0" step="any" class="form-control" id="conversionAreakWp">
+                            </div>
                         </div>
                         
                         <div class="row mb-3">
-                            <label for="impuestoElectrico" class="col-md-5 col-form-label" data-i18n="parametros_LBL_impuestoElectrico"></label>
+                            <label for="impuestoElectrico" class="col-md-5 col-form-label tDyn" data-i18n="parametros_LBL_impuestoElectrico"
+                            data-bs-toggle="tooltip" data-placement="top" name="parametros_TT_impuestoElectrico"></label>
                             <div class="col-md-3"><input type="number" min="0" step="any" class="form-control " id="impuestoElectrico"></div>
                         </div>
                         <div class="row mb-3">
-                            <label for="IVAenergia" class="col-md-5 col-form-label" data-i18n="parametros_LBL_IVAenergia"></label>
+                            <label for="IVAenergia" class="col-md-5 col-form-label tDyn" data-i18n="parametros_LBL_IVAenergia"
+                            data-bs-toggle="tooltip" data-placement="top" name="parametros_TT_IVAenergia"></label>
                             <div class="col-md-3"><input type="number" min="0" step="any" class="form-control " id="IVAenergia"></div>
                         </div>
                         <div class="row mb-3">
-                            <label for="IVAinstalacion" class="col-md-5 col-form-label" data-i18n="parametros_LBL_IVAinstalacion"></label>
+                            <label for="IVAinstalacion" class="col-md-5 col-form-label tDyn" data-i18n="parametros_LBL_IVAinstalacion"
+                            data-bs-toggle="tooltip" data-placement="top" name="parametros_TT_IVAinstalacion"></label>
                             <div class="col-md-3"><input type="number" min="0" step="any" class="form-control " id="IVAinstalacion"></div>
                         </div>
                         <div class="row mb-3">
-                            <label for="perdidasSistema" class="col-md-5 col-form-label" data-i18n="parametros_LBL_perdidasSistema"></label>
+                            <label for="perdidasSistema" class="col-md-5 col-form-label tDyn" data-i18n="parametros_LBL_perdidasSistema"
+                            data-bs-toggle="tooltip" data-placement="top" name="parametros_TT_perdidasSistema"></label>
                             <div class="col-md-3"><input type="number" min="0" step="any" class="form-control " id="perdidasSistema"></div>
                         </div>
                         <div class="row mb-3">
-                            <label for="interesVAN" class="col-md-5 col-form-label" data-i18n="parametros_LBL_interesVAN"></label>
+                            <label for="interesVAN" class="col-md-5 col-form-label tDyn" data-i18n="parametros_LBL_interesVAN"
+                            data-bs-toggle="tooltip" data-placement="top" name="parametros_TT_interesVAN"></label>
                             <div class="col-md-3"><input type="number" min="0" step="any" class="form-control " id="interesVAN"></div>
                         </div>
                         <div class="row mb-3">
-                            <label for="potenciaPanelInicio" class="col-md-5 col-form-label" data-i18n="parametros_LBL_potenciaPanelInicio"></label>
+                            <label for="potenciaPanelInicio" class="col-md-5 col-form-label tDyn" data-i18n="parametros_LBL_potenciaPanelInicio"
+                            data-bs-toggle="tooltip" data-placement="top" name="parametros_TT_potenciaPanelInicio"></label>
                             <div class="col-md-3"><input type="number" min="0" step="any" class="form-control " id="potenciaPanelInicio"></div>
                         </div>
 
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                                <span class="input-group-text" data-i18n="resultados_LBL_technology"></span>
+                                <span class="input-group-text tDyn" data-i18n="parametros_LBL_tecnologia"
+                                data-bs-toggle="tooltip" data-placement="top" name="parametros_TT_tecnologia"></span>
                             </div>
                             <select class="form-select col-md-2" id="tecnologia"> <!-- Tiene evento de cambio asociado en Dispatcher-->   
                                 <option value="crystSi">Crystaline silicon</option>
@@ -747,7 +757,7 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label class="col-md-5 col-form-label" data-i18n="parametros_LBL_tarifasLocales"></label>
+                            <label class="col-md-5 col-form-label tDyn" data-i18n="parametros_LBL_tarifasLocales"></label>
                             <label class="col-md-5"><a href="./datos/tarifas.json" target="_blank" data-i18n="consumo_LBL_ficheroTarifas"></a></label> 
                         </div>
                         <div>
@@ -755,7 +765,7 @@
                             data-bs-toggle="tooltip" data-placement="top" name="consumo_TT_ficheroTarifas">
                         </div>
 
-                        <div class="row mb-3">
+<!--                         <div class="row mb-3">
                             <label class="col-md-12 col-form-label">Volcado de datos</label>
                         </div>
 
@@ -766,7 +776,7 @@
                             <button type="button" class="btn btn-info col-md-2" id="dumpBalance">Balance</button>
                             <button type="button" class="btn btn-info col-md-2" id="dumpPrecioOriginal">Precios sin paneles</button>
                             <button type="button" class="btn btn-info col-md-2" id="dumpPrecioConPaneles">Precios con paneles</button>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
