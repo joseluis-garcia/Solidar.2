@@ -420,7 +420,7 @@ function modificaAcimutAreaSolar ( acimutAreaSolar ) {
   let acimutCoordinates = acimutAreaSolar.feature.getGeometry().getCoordinates();
   let point1 = acimutCoordinates[0];
   let point2 = acimutCoordinates[1];
-  if (acimutCoordinates.length > 2) { //Truncamos el line starig a los dos primerso vertices
+  if (acimutCoordinates.length > 2) { //Truncamos el line string a los dos primerso vertices
     acimutAreaSolar.feature.setGeometry(new ol.geom.LineString([point1,point2]));
   }
 
@@ -658,6 +658,8 @@ function inclinacionTejado( evento) {
     baseActiva.acimut = evento.value;
     componente = 'AreaSolar.acimut.' + featIDActivo;
     origenDatosSolidar.removeFeature(origenDatosSolidar.getFeatureById(componente)); //Si habia un acimut dibujado lo borramos
+    componente = 'AreaSolar.symbol.' + featIDActivo;
+    origenDatosSolidar.removeFeature(origenDatosSolidar.getFeatureById(componente)); 
   } else {
     geometriaActiva = {'nombre' : 'acimut', 'tipo': 'LineString'};
     addInteraction();
