@@ -28,11 +28,6 @@ export default async function inicializaEventos() {
   //Inicializacion graficos Plotly
   TCB.graficos = new Graficos();
 
-  //Inicializacion proceso i18n
-
-  await initIdioma();
-  document.getElementById("idioma").value = TCB.i18next.language.substring(0,2);
-
   // Define la url base de la aplicación
   let fullPath = window.location.href;
   let ipos = fullPath.lastIndexOf("/");
@@ -78,6 +73,9 @@ export default async function inicializaEventos() {
     }
   });
 
+  //Inicializacion proceso i18n
+  await initIdioma();
+  document.getElementById("idioma").value = TCB.i18next.language.substring(0,2);
   // Evento de cambio de idioma DOM.id: "idioma"
   const idioma = document.getElementById("idioma");
   idioma.addEventListener("change", function handleChange(event) {
@@ -103,6 +101,7 @@ export default async function inicializaEventos() {
   // Inicializa formulario de parametros
   UTIL.debugLog("_initEvents call gestionParametros");
   gestionParametros();
+
   inicializaWizard();
   return true;
 }

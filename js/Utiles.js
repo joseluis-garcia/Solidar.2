@@ -8,15 +8,49 @@ var campos = {
   "peso": {"unidad":" Kg", "decimales": 2, "salvar":true, "mostrar":true},
   "dinero": {"unidad": " €", "decimales": 0, "salvar":true, "mostrar":true},
 // Especificos
+  "impuestoTotal":{"unidad": "%", "decimales": 0, "salvar":false, "mostrar":true},
+  "consumoOriginalAnual":{"unidad": "%", "decimales": 0, "salvar":false, "mostrar":true},
+  "consumoConPlacasAnual":{"unidad": "%", "decimales": 0, "salvar":false, "mostrar":true}, 
+  "consumoOriginalMensual":{"unidad": "%", "decimales": 0, "salvar":false, "mostrar":true},
+  "consumoConPlacasMensual":{"unidad": "%", "decimales": 0, "salvar":false, "mostrar":true},
+  "consumoConPlacasMensualCorregido":{"unidad": "%", "decimales": 0, "salvar":false, "mostrar":true},
+  "compensadoMensual":{"unidad": "%", "decimales": 0, "salvar":false, "mostrar":true},
+  "compensadoMensualCorregido":{"unidad": "%", "decimales": 0, "salvar":false, "mostrar":true},
+  "ahorradoAutoconsumoMes":{"unidad": "%", "decimales": 0, "salvar":false, "mostrar":true},
+  "perdidaMes":{"unidad": "%", "decimales": 0, "salvar":false, "mostrar":true},
+  "ahorroAnual":{"unidad": "€", "decimales": 0, "salvar":false, "mostrar":true},
+  "TIRProyecto":{"unidad": "%", "decimales": 0, "salvar":false, "mostrar":true},
+  "VANProyecto":{"unidad": "€", "decimales": 0, "salvar":false, "mostrar":true},
+  "interesVAN":{"unidad": "%", "decimales": 0, "salvar":false, "mostrar":true},
+  "economicoCreado": {"unidad": "", "salvar":false, "mostrar":false},
+  "tiempoSubvencionIBI": {"unidad": "", "salvar":true, "mostrar":true},
+  "valorSubvencionIBI": {"unidad": "", "salvar":true, "mostrar":true},
+  "porcientoSubvencionIBI": {"unidad": "", "salvar":true, "mostrar":true},
+  "tipoSubvencionEU": {"unidad": "", "salvar":true, "mostrar":true},
+  "valorSubvencionEU": {"unidad": "", "salvar":false, "mostrar":true},
+  "ficheroCSV": {"unidad": "", "salvar":false, "mostrar":true},
+  
+  "nombreTarifa":{"salvar":true, "mostrar":true},
+  "precios":{"salvar":true, "mostrar":true},
+  "horas":{"salvar":true, "mostrar":true},
+  "cTarifa":{"salvar":false, "mostrar":false},
+  "csvCargado":{"salvar":false, "mostrar":false},
+  "territorio":{"salvar":true, "mostrar":true},
+  "fuente":{"unidad":"", "salvar":true, "mostrar":true},
+  "potenciaREE": {"unidad": " kWh", "decimales":2, "salvar":true, "mostrar":true},
   "id": {"unidad":"", "decimales":0, "salvar":true, "mostrar":true},
   "tipo": {"unidad":"", "decimales":0, "salvar":false, "mostrar":false},
   "area": {"unidad": " m<sup>2</sup>", "decimales":2, "salvar":true, "mostrar":true},
+  "areaReal": {"unidad": " m<sup>2</sup>", "decimales":2, "salvar":true, "mostrar":true},
   "nombre": {"unidad":"", "decimales":0, "salvar":true, "mostrar":true},
 	"potenciaMaxima": {"unidad": " kWp", "decimales":2, "salvar":true, "mostrar":true},
 	"inclinacionPaneles": {"unidad":"º","decimales":2, "salvar":true, "mostrar":true},
 	"inclinacionTejado": {"unidad":"º","decimales":2, "salvar":true, "mostrar":true},
 	"acimut": {"unidad":"º","decimales":2, "salvar":true, "mostrar":true},
+  "inAcimut": {"unidad":"º","decimales":2, "salvar":true, "mostrar":true},
 	"fechaInicio": {"unidad":"", "salvar":true, "mostrar":true},
+  "horaInicio": {"unidad":"", "salvar":true, "mostrar":true},
+  "horaFin": {"unidad":"", "salvar":true, "mostrar":true},
 	"fechaFin": {"unidad":"", "salvar":true, "mostrar":true},
 	"inclinacion": {"unidad":"º", "decimales":2, "salvar":true, "mostrar":true},
 	"rendimientoCreado": {"unidad": "", "salvar":false, "mostrar":false},
@@ -36,6 +70,7 @@ var campos = {
 	"year_min": {"unidad":"","decimales":0, "salvar":false, "mostrar":true},
 	"year_max": {"unidad":"","decimales":0, "salvar":false, "mostrar":true},
 	"numeroRegistros": {"unidad":"","decimales":0, "salvar":false, "mostrar":true},
+  "numeroDias":{"unidad":"","decimales":0, "salvar":false, "mostrar":true},
 	"potenciaUnitaria": {"unidad":" kWp","decimales":2, "salvar":true, "mostrar":true},
 	"paneles": {"unidad":"", "decimales":0, "salvar":true, "mostrar":true},
   "potenciaTotal":{"unidad":" kWp", "decimales":2, "salvar":true, "mostrar":true},
@@ -292,12 +327,6 @@ function formatoValor( campo, valor) {
   }
 }
 
-function safeData(obj) {
-  console.log(JSON.stringify(obj));
-}
-
-
-
 /* Función para mostrar el formulario modal de propiedades de un bojeto generico
 @param: objeto -> es el objeto del que se mostrará todas las propiedades que devuelve getOwnPropertyDescriptors en la función
                 obtenerPropiedades. La llamada es recursiva, si una propiedad es un objeto se mostrarán la propiedades de ese
@@ -321,7 +350,6 @@ function formularioAtributos (objeto, descripcion, yesBtnLabel = 'Yes', noBtnLab
           <div class="modal-body">
             <p>` + descripcion + `</p>
             <table id="tablaPropiedades" class="table table-sm table-striped table-bordered text-end center">`
-
             for (let i=0; i<vectorPropiedades.length; i++) {
                 if (vectorPropiedades[i].valor === "Objeto") {
                     tmpHTML += "<tr class='table-info text-center'><td colspan=2>" + i18next.t("objeto_"+vectorPropiedades[i].nombre) + "</td><tr>";
@@ -345,7 +373,7 @@ function formularioAtributos (objeto, descripcion, yesBtnLabel = 'Yes', noBtnLab
   modal.show();
 }
 
-var prop_val;
+
 /** Función recursiva para obtener los valores de las propiedades de un objeto.
  * El objeto base tiene nivel 0, si es objeto propiedad de otro objeto el nivel es 1
  * 
@@ -353,7 +381,9 @@ var prop_val;
  * @param {integer} nivel 
  * @returns [{'nombre propiedad', 'valor propiedad}]
  */
+var prop_val;
 function obtenerPropiedades ( objeto, nivel) {
+  if (objeto === undefined || objeto === null) return;
   if (nivel == 0 ) prop_val = [];
   const propiedades = Object.getOwnPropertyDescriptors(objeto); 
   for (let prop in propiedades) {
@@ -423,7 +453,6 @@ export {
   dumpData,
   getFileFromUrl,
   getQueryVariable,
-  safeData,
   formatoValor,
   muestraAtributos,
   obtenerPropiedades,

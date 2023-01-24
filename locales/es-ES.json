@@ -33,7 +33,6 @@
 	"main_TT_anterior": "Anterior",
 	"main_TAB_contacto":"Contacto",
 	"main_TAB_parametros":"Parametros de la aplicación",
-	"main_TT_guardar":"Guardar proyecto",
 
 	"contacto_LBL_descripcion":"Envianos tus comentarios. Intentaremos atenderte lo antes posible",
 	"contacto_LBL_enviar":"Enviar",
@@ -51,12 +50,11 @@
 	"proyecto_LBL_nombre_proyecto":"Proyecto",
 	"proyecto_TT_nombre_proyecto":"Nombre que el usuario dé a esta simulación (p. ej. piso01, luzescalera01, garaje00…)",
 	"proyecto_LBL_importar":"Importar proyecto",
-	"proyecto_TT_importar":"Seleccione fichero .solimp previamente exportado por Solidar",
-	"proyecto_LBL_importando":"Importando",
+	"proyecto_LBL_importando":"Importando {{fase}}",
 	"proyecto_MSG_confirmaImportacion":"El proyecto existente será reemplazado por el importado",
 
-	"mapa_MSG_Polygon":"Defina el area en la que se instalarán los paneles. Solo son necesarios tres puntos",
-	"mapa_MSG_LineString":"De un punto para indicar la orientación geográfica de los paneles",
+	"mapa_MSG_Polygon":"Defina el area en la que se instalarán los paneles. La aplicación la cerrará cuando haga doble-click",
+	"mapa_MSG_LineString":"De un doble-click para indicar la orientación geográfica de los paneles",
 	"mapa_MSG_Point":"Defina la ubicación del consumo",
 	"mapa_MSG_nada":"Seleccione el objeto a dibujar",
 	"mapa_MSG_posicionConsumo" : "De un click para posicionar un nuevo consumo",

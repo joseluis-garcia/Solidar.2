@@ -135,8 +135,14 @@ async function prepara() {
     i = 1;
     nuevaLinea('Cabecera',null, null, 'main_LBL_titulo');
     nuevaLinea('Titulo',i++, null, 'informe_LBL_balanceEconomico');
-    nuevaLinea('Dato', i++, 'consumo_LBL_tarifa', TCB.tarifaActiva);
-
+    let tarifaActiva = TCB.consumo.tarifa.nombreTarifa
+    if (tarifaActiva === "3.0TD") tarifaActiva += " (" + TCB.consumo.tarifa.territorio + ")";
+    nuevaLinea('Dato', i++, 'consumo_LBL_tarifa', tarifaActiva);
+    nuevaLinea('Dato', i++, 'consumo_LBL_compensa', TCB.consumo.tarifa.precios[0] + "€/kWh");
+    for (let j=1; j<=6; j++) {
+      if (TCB.consumo.tarifa.precios[j] > 0) 
+          nuevaLinea('Dato', i++, "P"+j, TCB.consumo.tarifa.precios[j] + "€/kWh");
+    }
     let consumoOriginalAnual = suma(TCB.consumo.economico.consumoOriginalMensual);
     let consumoConPlacasAnual = suma(TCB.consumo.economico.consumoConPlacasMensualCorregido);
     nuevaLinea('Dato', i++, 'precios_LBL_gastoAnualSinPlacas', formatoValor('dinero',consumoOriginalAnual));

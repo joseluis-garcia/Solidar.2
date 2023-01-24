@@ -3,10 +3,12 @@ import {optimizador} from "./optimizador.js";
 import TCB from "./TCB.js";
 import Produccion from "./Produccion.js";
 import Balance from "./Balance.js";
-import {formatoValor, muestraAtributos, muestra} from "./Utiles.js";
+import Instalacion from "./Instalacion.js";
+import {formatoValor, muestraAtributos, muestra, debugLog} from "./Utiles.js";
 
-function gestionResultados( accion) {
+async function gestionResultados( accion, datos) {
     let status;
+    debugLog("gestionResultados: " + accion);
     switch (accion) {
     case "Inicializa":
         status = inicializaEventos();
@@ -17,51 +19,67 @@ function gestionResultados( accion) {
     case "Prepara":
         status = prepara();
         break;
+    case "Importa":
+        status = importa(datos);
+        break;
     }
     return status;
   }
 
 function inicializaEventos() {
-
+  return true;
 }
 
 function valida() {
-    return true;
+  return true;
+}
+
+function importa(datosImportar) {
+  let i = 0;
+  datosImportar.bases.forEach( (base) => {
+    TCB.bases[i].instalacion = new Instalacion(base.paneles, base.potenciaUnitaria);
+    TCB.bases[i++].instalacion.precioFinal =  base.precioInstalacionCorregido;
+  })
+
+/*   TCB.produccion.precioInstalacionCorregido = datosImportar.precioInstalacionCorregido;
+  TCB.produccion.precioInstalacion = datosImportar.precioInstalacion; */
 }
 
 function prepara() {
+/*  Si estamos importando se respeta la asignacion de paneles que viene en el fichero de importación
+    en caso contrario se llama al optimizador */
+  if (TCB.requiereOptimizador) {
     optimizador (TCB.bases, TCB.consumo,  TCB.parametros.potenciaPanelInicio);
+    TCB.requiereOptimizador = false;
+  }
 
-// Esta funcon genera un objeto produccion a partir de la produccion de cada una de las bases
-
-    TCB.bases.forEach( (base) => {
+// Se genera un objeto produccion para cada una de las bases
+  TCB.bases.forEach( (base) => {
     if (base.produccionCreada) {
       delete base.produccion;
       base.produccionCreada = false;
     }
     base.produccion = new Produccion( base);
-    });
+  });
 
-    if (TCB.produccion.produccionCreada) {
-        delete TCB.produccion.produccion;
-        TCB.produccion.produccionCreada = false;
-    }
-    TCB.produccion = new Produccion();
-    TCB.produccion.produccionCreada = true;
+// Se genera un objeto produccion que totaliza la produccion de cada una de las bases
+  if (TCB.produccion.produccionCreada) {
+      delete TCB.produccion.produccion;
+      TCB.produccion.produccionCreada = false;
+  }
+  TCB.produccion = new Produccion();
+  TCB.produccion.produccionCreada = true;
 
+// Construccion objeto Balance global
+  if (TCB.balanceCreado) {
+    delete TCB.balance;
+    TCB.balanceCreado = false;
+  }
+  TCB.balance = new Balance(TCB.produccion, TCB.consumo);
+  TCB.balanceCreado = true;
 
-
-  // Función de construccion objeto Balance -------------------------------------------------------------------------------
-
-    if (TCB.balanceCreado) {
-      delete TCB.balance;
-      TCB.balanceCreado = false;
-    }
-    TCB.balance = new Balance(TCB.produccion, TCB.consumo);
-    TCB.balanceCreado = true;
-
-    if (TCB.balanceCreado) muestraBalanceEnergia();
-    return true;
+  if (TCB.balanceCreado) muestraBalanceEnergia();
+  return true;
 }
 
 function muestraBalanceEnergia() {

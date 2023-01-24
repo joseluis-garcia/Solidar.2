@@ -65,3 +65,13 @@
 - Cambiada toda la arquitectura de base para soportar multiples areas y multiples consumos aunque en esta version no se admiten multiples consumos.
 - Cambiado todo el codigo de los reports
 
+## 20230101
+- Correccion carga CSV. Faltaba inicializar tabla diaHora e IDX
+
+## 20230124
+- Las bases se dibujan con tres puntos
+- El acimut solo admite un punto
+- Importación y exportación de proyecto
+- Cambiados los campos que premiten identificar un fichero
+- Añadido precios tarifa a resumen y reportePDF
+

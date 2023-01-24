@@ -55,10 +55,10 @@ export default class Rendimiento {
         let inclinacion = parseFloat(base.inclinacionPaneles) + parseFloat(base.inclinacionTejado);
         addurl = "&angle=" + inclinacion;
       }
-      if (base.acimut === "") {
-        base.acimut = 0;
+      if (base.inAcimut === "") {
+        base.inAcimut = 0;
       }
-      addurl += "&aspect=" + base.acimut;
+      addurl += "&aspect=" + base.inAcimut;
     }
 
 
@@ -102,7 +102,6 @@ export default class Rendimiento {
         this.meteo_db = PVGISdata.inputs.meteo_data.meteo_db;
         this.year_min = PVGISdata.inputs.meteo_data.year_min;
         this.year_max = PVGISdata.inputs.meteo_data.year_max;
-        console.log(PVGISdata.inputs);
 
         PVGISdata.outputs.hourly.forEach((element) => {
           //Para gestionar fechas en formato dd/mm/aaaa como vienen en el CSV debamos invertir a aaaa/mm/dd en javascript

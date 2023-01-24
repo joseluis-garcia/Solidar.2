@@ -74,6 +74,10 @@
             margin-right: auto;
             width: 50%;
         }
+
+        #myFileInput {
+            display:none;
+        }
     </style>
 
     <!-- I18n -->
@@ -87,7 +91,8 @@
 
     <!-- jspdf -->
 <!--     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.8.0/html2pdf.bundle.min.js"></script> -->
-    <script src="./js/jspdf.debug.js"></script>
+<script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+<!--     <script src="./js/jspdf.debug.js"></script> -->
     <script src='https://html2canvas.hertzen.com/dist/html2canvas.min.js'></script>
     <script src="https://unpkg.com/jspdf-autotable@3.5.22/dist/jspdf.plugin.autotable.js"></script>
 
@@ -127,11 +132,9 @@
             <button class="btn btn-default tDyn pull-right" type="button" id="contacto" data-bs-toggle="modal" 
             data-bs-target="#formularioContacto" data-bs-toggle="tooltip" data-bs-placement="top" name="main_TT_contacto">
             <span class="fa fa-envelope-o"></span>
-
-<!--             Boton de guardar por ahora desactivado
-            <button class="btn btn-default tDyn pull-right" type="button" id="guardar"
+            <button class="btn btn-default tDyn pull-right" type="button" id="exportar"
             data-bs-toggle="tooltip" data-bs-placement="top" name="main_TT_guardar"><span class="fa fa-floppy-o"></span>
-            </button> -->
+            </button>
         </div>
         <div class="col-md-1 pull-right">
             <select class="form-select col-md-2" id="idioma" >
@@ -177,39 +180,40 @@
                     <!-- Contenido del tab desde donde se define la localizacion de la instalación -->
                     <div class="tab-pane show active" id="localizacion-tab" role="tabpanel">
 
-                        <!-- Introduccion nombre del proyecto-->
-                        <div class="row justify-content-center mb-3">
-                            <label for="nombreProyecto" class="col-md-1 col-form-label" data-i18n="proyecto_LBL_nombre_proyecto"></label>
-                            <div class="col-md-11">
+                        <!-- Introduccion nombre del proyecto y boton de importar-->
+                        <div class="row justify-content-center">
+                            <div class="input-group mb-3">
+                                <label for="nombreProyecto" class="col-md-1 col-form-label" data-i18n="proyecto_LBL_nombre_proyecto"></label>
                                 <input type="text" class="form-control tDyn" id="nombreProyecto"
-                                data-bs-toggle="tooltip" data-placement="top" name="proyecto_TT_nombre_proyecto"> <!-- Tiene evento de cambio asociado -->
+                                data-bs-toggle="tooltip" data-placement="top" name="proyecto_TT_nombre_proyecto">
+                               <button class="btn btn-info btn-sm tDyn col-md-2 pull-right" type="button" id="importar" data-i18n="proyecto_LBL_importar"
+                                data-bs-toggle="tooltip" data-bs-placement="top" name="proyecto_TT_importar"></button>
                             </div>
                         </div>
-
                         <!-- Grupo de campos para ayuda a la localización geografica -->
                         <!-- Campo para introducir coordenadas geograficas -->
                         <div class="row align-items-center mb-3">
 
-                                <!-- Entrada lon-lat-->
-                                <label for="campoLONLAT" class="col-md-1 col-form-label pull-left" data-i18n="mapa_LBL_lonlat"></label>
-                                <div class="col col-md-2">
-                                    <input type="text" class="form-control col-md-2 tDyn" id="campoLONLAT"
-                                    data-bs-toggle="tooltip" data-placement="top" name="mapa_TT_lonlat"> <!-- Tiene evento de cambio asociado en Dispatcher-->
-                                </div>
+                            <!-- Entrada lon-lat-->
+                            <label for="campoLONLAT" class="col-md-1 col-form-label pull-left" data-i18n="mapa_LBL_lonlat"></label>
+                            <div class="col col-md-2">
+                                <input type="text" class="form-control col-md-2 tDyn" id="campoLONLAT"
+                                data-bs-toggle="tooltip" data-placement="top" name="mapa_TT_lonlat"> <!-- Tiene evento de cambio asociado en Dispatcher-->
+                            </div>
 
-                                <!-- campos para localizacion de zona o direccion -->
-                                <div class="col col-md-4">
-                                    <input type="text" class="form-control col-md-2 text-info tDyn" id="direccion" onfocus="this.value=''"
-                                    data-bs-toggle="tooltip" data-placement="top" name="mapa_TT_localizar"> <!-- Tiene evento de cambio asociado en Dispatcher-->
-                                </div>
-                                <div class="col col-md-5">
-                                    <select class="form-select tDyn" id="candidatos" disabled
-                                    data-bs-toggle="tooltip" data-placement="top" name="mapa_TT_candidatos"></select>  <!-- Tiene evento de cambio asociado en Dispatcher-->
-                                </div>
+                            <!-- campos para localizacion de zona o direccion -->
+                            <div class="col col-md-4">
+                                <input type="text" class="form-control col-md-2 text-info tDyn" id="direccion" onfocus="this.value=''"
+                                data-bs-toggle="tooltip" data-placement="top" name="mapa_TT_localizar"> <!-- Tiene evento de cambio asociado en Dispatcher-->
+                            </div>
+                            <div class="col col-md-5">
+                                <select class="form-select tDyn" id="candidatos" disabled
+                                data-bs-toggle="tooltip" data-placement="top" name="mapa_TT_candidatos"></select>  <!-- Tiene evento de cambio asociado en Dispatcher-->
+                            </div>
                         </div>
             
                         <!-- fila con los comandos del mapa -->
-                        <div class="row" id="headerMap">
+                        <div class="row col-md-12" id="headerMap">
                             <label class="col-md-6" id="accionMapa" data-i18n="mapa_MSG_nada"></label>
 
 <!-- Solo cuando tengamos la opcion de poner geoConsumos.                             
@@ -227,7 +231,8 @@
 
                         <!-- tabla donde se muestran las bases a medida que se crean-->
                         <div class="row w-100">
-                            <table id="tablaAreaSolar" class="table table-striped table-bordered table-success table-sm" style="display:none">
+                            <table id="tablaAreaSolar" class="table table-striped table-bordered table-success 
+                            text-end border-primary table-sm" style="display:none">
                                 <thead class="thead-light align-middle text-center">
                                     <tr class="align-middle">
                                         <th scope="col" data-i18n="mapa_LBL_ID"></th>
@@ -490,7 +495,6 @@
                             <div class="col-md-2 text-end" id="energiaSobrante%Produccion"><a data-i18n="resultados_LBL_pendienteCalculo"></a></div>    
                         </div>
 
-
                         <hr/>
 
                         <div class="form-group row justify-content-center">
@@ -553,7 +557,6 @@
 
                     <!-- Contenido del tab desde donde se vuelcan los resultados económico y financiero-->
                     <div class="tab-pane fade" id="precios-tab" role="tabpanel">
-
     
                         <div class="form-group row justify-content-center">
                             <label class="col-md-3 tDyn" data-i18n="precios_LBL_gastoAnualSinPlacas"
@@ -587,7 +590,7 @@
                         </div>
 
                         <hr/>
-
+                    <!-- Contenido del bloque de subvenciones y bonificación IBI-->
                         <div class="form-group row">
                             <label for="ibi" class="offset-md-1 col-md-1 col-form-label tDyn" data-i18n="precios_LBL_IBI"
                             data-bs-toggle="tooltip" data-bs-placement="top" name="precios_TT_IBI"></label>
@@ -619,10 +622,10 @@
                         </div>
 
                         <hr/>
-                        
+                    <!-- Tabla de cashflow -->
                         <div>
-                            <table id="financiero" class="table table-sm table-striped table-bordered text-end border-primary table-success">
-                                <thead class="thead-light">
+                            <table id="financiero" class="table table-sm table-striped table-bordered text-end border-primary table-success col-md-10">
+                                <thead class="thead-light align-middle">
                                     <tr>
                                         <th scope="col col-md-1" data-i18n="precios_LBL_año" class="tDyn" data-bs-toggle="tooltip" data-bs-placement="top" name="precios_TT_año"></th>
                                         <th scope="col" data-i18n="precios_LBL_previo" class="tDyn" data-bs-toggle="tooltip" data-bs-placement="top" name="precios_TT_previo"></th>

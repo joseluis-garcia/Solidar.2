@@ -30,8 +30,6 @@
 "main_TT_anterior":"Former",
 "main_TAB_contacto":"Contact",
 "main_TAB_parametros":"Application parameters",
-"main_TT_guardar":"Save project",
-
 "contacto_LBL_descripcion":"Send us your comments. We will try to assist you as soon as possible",
 "contacto_LBL_enviar":"Send",
 "contacto_LBL_mensaje":"Message",
@@ -44,16 +42,10 @@
 "contacto_LBL_telefono":"Telephone",
 "contacto_LBL_email":"e-mail",
 "contacto_LBL_nombre":"Name",
-
 "proyecto_LBL_nombre_proyecto":"Project",
 "proyecto_TT_nombre_proyecto":"Name that the user gives to this simulation (eg apartment 01, LuzScalera01, garage00 ...)",
-"proyecto_LBL_importar":"Import project",
-"proyecto_TT_importar":"Select file *.solimp previously exported by Solidar",
-"proyecto_LBL_importando":"Importing",
-"proyecto_MSG_confirmaImportacion":"The existing project will be replaced by the imported",
-
-"mapa_MSG_Polygon":"Define the area in which the panels will be installed. Only three points are necessary",
-"mapa_MSG_LineString":"Point on map to indicate the geographical orientation of the panels",
+"mapa_MSG_Polygon":"Define the area in which the panels will be installed. The application will close when double-click",
+"mapa_MSG_LineString":"Double-click to indicate the geographical orientation of the panels",
 "mapa_MSG_Point":"Define consumption location",
 "mapa_MSG_nada":"Select the object to draw",
 "mapa_MSG_posicionConsumo":"A click to position a new consumption",

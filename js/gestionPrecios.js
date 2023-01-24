@@ -1,41 +1,41 @@
-import {formatoValor,  suma, muestra} from "./Utiles.js";
+import {formatoValor,  suma, muestra, debugLog} from "./Utiles.js";
 import Economico from "./Economico.js";
 import TCB from "./TCB.js";  
 
-export default function gestionPrecios( accion) {
-    switch (accion) {
-    case "Inicializa":
-        inicializaEventos();
-        break;
-    case "Valida":
-        return valida();
-    case "Prepara":
-        prepara();
-        break;
-    }
+export default function gestionPrecios( accion, datos) {
+  debugLog("gestionPrecios: " + accion);
+  switch (accion) {
+  case "Inicializa":
+      inicializaEventos();
+      break;
+  case "Valida":
+      return valida();
+  case "Prepara":
+      prepara();
+      break;
+  case "Importa":
+      importa(datos);
+      break;
   }
+}
 
 function inicializaEventos() {
 
-     // Estos eventos se iran al gestionXXX
     // ---> Eventos de la pestaña balance economico
     // Evento para gestionar la modificacion del precio de instalación
     document.getElementById("correccionCoste").addEventListener("change", (e) => modificaPrecioInstalacion( e));
 
 
     function modificaPrecioInstalacion(evento) {
-      TCB.correccionPrecioInstalacion = parseFloat(evento.target.value);
-      TCB.produccion.precioInstalacionCorregido = 0;
-/*       TCB.bases.forEach( (base) => {
-        console.log(base.instalacion.precioInstalacionCorregido);
-        TCB.produccion.precioInstalacionCorregido += base.instalacion.precioInstalacionCorregido;
-      }) */
-      TCB.produccion.actualizaPrecioInstalacion();
-    muestra("costeCorregido", "", formatoValor("dinero", TCB.produccion.precioInstalacionCorregido));
-    TCB.consumo.economico.calculoFinanciero();
-    muestraBalanceFinanciero();
+      TCB.correccionPrecioInstalacion = 1 + parseFloat(evento.target.value) / 100;
+      TCB.bases.forEach( (base) => {
+        base.produccion.precioInstalacionCorregido = base.produccion.precioInstalacion * TCB.correccionPrecioInstalacion;
+      });
+      TCB.produccion.precioInstalacionCorregido = TCB.produccion.precioInstalacion * TCB.correccionPrecioInstalacion;
+      muestra("costeCorregido", "", formatoValor("dinero", TCB.produccion.precioInstalacionCorregido));
+      TCB.consumo.economico.calculoFinanciero();
+      muestraBalanceFinanciero();
     }
-
 
     // Evento para cargar la subvención EU DOMid: "subvencionEU"
     // La subvención EU solo se puede aplicar cuando el autoconsumo es superior al 80%
@@ -59,7 +59,17 @@ function inicializaEventos() {
             muestraBalanceFinanciero();
         }
     }
+}
 
+function importa (datosImportar) {
+
+  document.getElementById("duracionSubvencionIBI").value =  datosImportar.consumos[0].tiempoSubvencionIBI;
+  document.getElementById("valorIBI").value = datosImportar.consumos[0].valorSubvencionIBI;
+  document.getElementById("porcientoSubvencionIBI").value = datosImportar.consumos[0].porcientoSubvencionIBI * 100;
+  document.getElementById("subvencionEU").value = datosImportar.consumos[0].tipoSubvencionEU;
+  TCB.precioInstalacion = datosImportar.precioInstalacion;
+  TCB.correccionPrecioInstalacion = datosImportar.correccionPrecioInstalacion;
+  document.getElementById("correccionCoste").value = ((TCB.correccionPrecioInstalacion - 1) * 100).toFixed(2);
 }
 
 function valida() {
@@ -137,7 +147,7 @@ async function muestraBalanceFinanciero() {
   
     muestra("VAN", "", formatoValor("dinero", TCB.consumo.economico.VANProyecto));
     muestra("TIR", "", formatoValor("porciento", TCB.consumo.economico.TIRProyecto));
-    //await loopAlternativas();
+
   }
 
 export {gestionPrecios}

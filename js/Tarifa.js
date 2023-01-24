@@ -6,22 +6,22 @@ import TCB from "./TCB.js";
 export default class Tarifa {
 /**
  * 
- * @param {string} nombre El formato del nombre de la tarifa es X.0TD-R 
- *    nombreExterno = [ 2.0TD, 3.0TD]
+ * @param {string} nombreTarifa El formato del nombre de la tarifa es X.0TD-R 
+ *    nombreTarifa = [ 2.0TD, 3.0TD]
  *    territorio = ['Peninsula', 'Islas Baleares', 'Canarias', 'Melilla', 'Ceuta']                                       
  */
-  constructor(nombre, territorio) {
-    this.nombre = nombre;
+  constructor(nombreTarifa, territorio) {
+    this.nombreTarifa = nombreTarifa;
     this.territorio = territorio;
-    let ctarifa = nombre === "2.0TD" ? nombre : nombre + "-" + territorio;
+    let ctarifa = nombreTarifa === "2.0TD" ? nombreTarifa : nombreTarifa + "-" + territorio;
     this.precios = TCB.tarifas[ctarifa].precios;
     this.horas = TCB.tarifas[ctarifa].horas;
   }
 
-  setTarifa (nombre, territorio) {
-    this.nombre = nombre;
+  setTarifa (nombreTarifa, territorio) {
+    this.nombreTarifa = nombreTarifa;
     this.territorio = territorio;
-    let ctarifa = nombre === "2.0TD" ? nombre : nombre + "-" + territorio;
+    let ctarifa = nombreTarifa === "2.0TD" ? nombreTarifa : nombreTarifa + "-" + territorio;
     this.precios = TCB.tarifas[ctarifa].precios;
     this.horas = TCB.tarifas[ctarifa].horas;
   }

@@ -1,3 +1,4 @@
+import * as UTIL from "./Utiles.js";
 import Rendimiento from "./Rendimiento.js";
 import Base from "./Base.js";
 
@@ -14,7 +15,8 @@ export default class BaseSolar extends Base {
     super (area);
     super.tipo = "Solar";
     super.nombre = area.nombre;
-    this.area = area.area;
+    this.area = area.area;         //El area en el mapa
+    this.areaReal = area.areaReal; //El area corregida por la inclinaciond e l tejado
     this.lonlat = area.lonlat;
     this.potenciaMaxima = parseFloat(area.potenciaMaxima);
     this.rendimientoCreado = false;
@@ -23,11 +25,14 @@ export default class BaseSolar extends Base {
     this.inclinacionPaneles = area.inclinacionPaneles;
     this.inclinacionTejado = area.inclinacionTejado;
     this.angulosOptimos = area.angulosOptimos;
-    this.acimut = area.acimut;
+    this.inAcimut = area.inAcimut;
 
     this.rendimiento = "";
     this.instalacion = "";
     this.produccion = "";
+
+    UTIL.debugLog("Nuueva base solar "+area.nombre+" creada");
+    
   }
 
   async cargaRendimiento() {

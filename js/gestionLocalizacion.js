@@ -175,6 +175,9 @@ function inicializaEventos () {
   - un Consumo (Point) donde se definirá un perfil de consumo
   */
   origenDatosSolidar.on('addfeature', (featCreado) => {
+
+    if (TCB.importando) return; //Si estamos en un proceso de importacion no debemos hacer nada
+    
     switch (geometriaActiva.nombre) {
     case 'AreaSolar':
       construirAreaSolar ( featCreado);
@@ -189,11 +192,15 @@ function inicializaEventos () {
   });
 }
 
-/**
- * Es la función llamada desde InicializaAplicacion para cargar y activar el mapa
+
+/** Es la función llamada desde el Wizard para la gestion de la ventana de localización
  * 
- */
-async function gestionLocalizacion( accion) {
+ * @param {*} accion [Inicializa, Valida, Prepara, Importa]
+ * @param {*} datos En el caso de importacion de datos los datos a importar
+ * @returns 
+ */ 
+async function gestionLocalizacion( accion, datos) {
+  UTIL.debugLog("gestionLocalizacion: " + accion);
   let status;
   switch (accion) {
   case "Inicializa":
@@ -205,8 +212,58 @@ async function gestionLocalizacion( accion) {
   case "Prepara":
     status = prepara();
     break;
+  case "Importa":
+    status = importa(datos);
+    break;
   }
   return status;
+}
+
+/**
+ * 
+ * @param {*} datosImportar Se gestionaran los campos mapa y bases del fichero de importacion
+ */
+async function importa( datosImportar) {
+
+  const tabla = document.getElementById("tablaAreaSolar");
+  var rowCount = tabla.rows.length;
+  if (rowCount > 1) {
+    for (let i = 1; i < rowCount; i++) tabla.deleteRow(1);
+  }
+
+  origenDatosSolidar.getFeatures().forEach( (feat) => {
+    origenDatosSolidar.removeFeature(feat);
+  });
+
+  // Importamos los features OpenLayers
+  var jsonReader = new ol.format.GeoJSON();
+  var impFeatures = jsonReader.readFeatures(datosImportar.mapa);
+  origenDatosSolidar.addFeatures(impFeatures);
+
+  // Actualizamos los labels del mapa con el nombre de la correspondiente base
+  datosImportar.bases.forEach( (base) => {
+    const label = origenDatosSolidar.getFeatureById("AreaSolar.label." + base.id);
+    setLabel (label, base.nombre, TCB.baseLabelColor,TCB.baseLabelBGColor);
+    const markerAcimut = origenDatosSolidar.getFeatureById("AreaSolar.symbol."+base.id);
+    if (markerAcimut) markerAcimut.setStyle(TCB.markerAcimutSymbol);
+
+    let nuevaArea = {};
+    nuevaArea.nombre = base.nombre;
+    nuevaArea.id = base.id;
+    nuevaArea.lonlat = base.lonlat;
+    nuevaArea.potenciaMaxima = base.potenciaMaxima;
+    nuevaArea.inclinacionOptima = base.inclinacionOptima;
+    nuevaArea.inclinacionPaneles = base.inclinacionPaneles;
+    nuevaArea.inclinacionTejado = base.inclinacionTejado;
+    nuevaArea.inAcimut = base.inAcimut;
+    nuevaArea.angulosOptimos = base.angulosOptimos;
+    nuevaArea.areaReal = base.areaReal;
+    nuevaArea.area = base.area;
+
+    let nuevaBase = new BaseSolar(nuevaArea);
+    TCB.bases.push( nuevaBase);
+    nuevaFilaEnTablaAreaSolar (nuevaBase);
+  });
 }
 
 function prepara() {
@@ -215,31 +272,26 @@ function prepara() {
 
 async function valida () {
   // Valida que los datos de las bases existentes son coherentes
-  if (!validaBases ()) return false;
-    
-  //Carga rendimientos de cada base que lo requiera asincronicamente
-  //La propiedad requierePVGIS es gestionada en GestionLocalizacion y se pone a true cuando cambia algun angulo
-  try {
-      TCB.bases.forEach (base => {
-          if (base.requierePVGIS) {
-            UTIL.debugLog("Base requiere PVGIS:", base);
-            base.cargaRendimiento();
-          }
-      })
-
-      return true;
-  } catch (err) {
-      alert (err);
-      return false;
-  }
-}
-
-function validaBases () {
   if (TCB.bases.length === 0) {
     alert (TCB.i18next.t("mapa_MSG_definePosicionMapa"));
     return false;
   }
-  return true;
+    
+  //Carga rendimientos de cada base que lo requiera asincronicamente
+  //La propiedad requierePVGIS es gestionada en GestionLocalizacion y se pone a true cuando cambia algun angulo
+  try {
+    TCB.bases.forEach (base => {
+        if (base.requierePVGIS) {
+          UTIL.debugLog("Base requiere PVGIS:", base);
+          TCB.requiereOptimizador = true;
+          base.cargaRendimiento();
+        }
+    })
+    return true;
+  } catch (err) {
+    alert (err);
+    return false;
+  }
 }
 
 function setActivo(evento) {
@@ -257,7 +309,11 @@ function setActivo(evento) {
       break;
   }
 }
-
+function dist(p0, p1) {
+  const deltaX = p1[0] - p0[0];
+  const deltaY = p1[1] - p0[1];
+  return ( Math.sqrt(deltaX*deltaX + deltaY*deltaY));
+}
 async function construirAreaSolar ( AreaSolar) {
 /*  El feature AreaSolar esta compuesto por 3 geometrias:
     Polygon con ID AreaSolar.area.+featID
@@ -269,8 +325,16 @@ async function construirAreaSolar ( AreaSolar) {
   // Incrementamos el featID
   featIDActivo = featID++;
 
-  // Construimos la geometria del AreaSolar
+  // Construimos la geometria del AreaSolar que es un paralelogramo a partir de tres puntos
   geometria = AreaSolar.feature.getGeometry();
+  let puntos = geometria.getCoordinates()[0];
+  const largo1 = dist(puntos[0], puntos[1]);
+  const largo2 = dist(puntos[1], puntos[2]);
+  let nuevoY = puntos[2][1] - ( puntos[1][1] - puntos[0][1]);
+  let nuevoX = puntos[0][0] - ( puntos[1][0] - puntos[2][0]);
+  let nuevoPunto = [nuevoX, nuevoY];
+  puntos.splice(3, 0, nuevoPunto);
+  AreaSolar.feature.getGeometry().setCoordinates([puntos]);
 
   // Calculamos una coordenada central para esta base que utilizaremos en PVGIS y donde rotularemos el area
   puntoAplicacion = geometria.getInteriorPoint().getCoordinates();
@@ -293,18 +357,19 @@ async function construirAreaSolar ( AreaSolar) {
   nuevoLabel ("AreaSolar.label." + featIDActivo, 
               puntoAplicacion, 
               nuevaArea.nombre , 
-              [255, 255, 255, 1], 
-              [168, 50, 153, 0.6]);
+              TCB.baseLabelColor, 
+              TCB.baseLabelBGColor);
 
   nuevaArea.id = featIDActivo.toString();
   nuevaArea.lonlat = puntoAplicacion_4326[0].toFixed(4) + "," + puntoAplicacion_4326[1].toFixed(4);
   nuevaArea.area = ol.sphere.getArea(geometria, { projection: "EPSG:3857" });
+  nuevaArea.areaReal = nuevaArea.area;
   nuevaArea.inclinacionTejado = 0;
   nuevaArea.areaReal = nuevaArea.area;
   nuevaArea.potenciaMaxima = nuevaArea.area / TCB.parametros.conversionAreakWp;
   nuevaArea.inclinacionPaneles = "";
   nuevaArea.inclinacionOptima = false;
-  nuevaArea.acimut = "";
+  nuevaArea.inAcimut = "";
   nuevaArea.angulosOptimos = true;
   let nuevaBase = new BaseSolar(nuevaArea);
   TCB.bases.push( nuevaBase);
@@ -313,7 +378,6 @@ async function construirAreaSolar ( AreaSolar) {
 }
 
 function nuevaFilaEnTablaAreaSolar(base) {
-
   // Construccion de las filas de la tabla areas
   let tmpHTML;
 
@@ -349,43 +413,42 @@ function nuevaFilaEnTablaAreaSolar(base) {
   cell = row.insertCell();
   cell.id = 'AreaSolar.inclinacionTejado.'+base.id;
   cell.innerHTML = '<input type="number" class="text-end" style="width: 100px;" value=0>';
+  cell.firstChild.value = parseFloat(UTIL.formatoValor('inclinacionTejado',base.inclinacionTejado));
   cell.addEventListener('change', (evt) => { inclinacionTejado (evt.target)})
 
   // Area corregida por la inclinación del tejado. Inicialmente la misma
   cell = row.insertCell();
   cell.id = 'AreaSolar.areaReal.'+base.id;
-  cell.setAttribute( "valor", base.area);
-  cell.innerHTML = '<label>' + UTIL.formatoValor('area', base.area)+ '</label>';
+  cell.innerHTML = '<label>' + UTIL.formatoValor('area', base.areaReal)+ '</label>';
 
   // Potencia disponible en base al area real
   cell = row.insertCell();
   cell.id = 'AreaSolar.potenciaMaxima.'+base.id;
-  cell.setAttribute( "valor", base.potenciaMaxima);
-  cell.innerHTML = '<label>' + 
-    UTIL.formatoValor('potencia', base.potenciaMaxima) + '</label>';
+  cell.innerHTML = '<label>' + UTIL.formatoValor('potencia', base.potenciaMaxima) + '</label>';
 
   // Campo para definir inclinacion del panel
   cell = row.insertCell();
   cell.id = 'AreaSolar.inclinacion.'+base.id;
-  cell.setAttribute( "valor", "");
   cell.innerHTML = '<input type="number" class="text-end" style="width: 100px;" value="">';
+  cell.firstChild.value = parseFloat(UTIL.formatoValor('inclinacionPaneles',base.inclinacionPaneles));
   cell.addEventListener('change', (evt) => {inclinacionPaneles (evt.target)});
 
   // Boton para definir la inclinacion optima
   cell = row.insertCell();
   cell.id = 'AreaSolar.inclinacionOptima.'+base.id;
-  cell.setAttribute( "valor", "checked");
   cell.innerHTML = '<input class="form-check-input" type="checkbox">';
+  cell.firstChild.checked = base.inclinacionOptima;
   cell.addEventListener('click', (evt) => {inclinacionOptima (evt.target)});
 
   // Boton para definir el acimut
   cell = row.insertCell();
   cell.id = 'AreaSolar.acimut.'+base.id;
-  cell.setAttribute( "valor", "");
   tmpHTML =  '<input type="number" class="text-end" style="width: 100px;" value="" id="acimutNumber">';
   tmpHTML += '<button class="btn tDyn" id="acimutButton" type="Button" data-bs-toggle="tooltip" data-bs-placement="top" name="mapa_TT_botonAcimut">';
   tmpHTML += '<i class="fa fa-compass"></i></button>'
   cell.innerHTML = tmpHTML;
+  cell.firstChild.value = parseFloat(UTIL.formatoValor('inAcimut',base.inAcimut));
+  //cell.firstChild.innerText = UTIL.formatoValor('inAcimut',base.inAcimut);
   document.getElementById("acimutButton").title = i18next.t("mapa_TT_botonAcimut");
   cell.addEventListener('click', (evt) => {acimutAreaSolar (evt.target)});
   cell.addEventListener('change', (evt) => {acimutAreaSolar (evt.target)});
@@ -393,8 +456,8 @@ function nuevaFilaEnTablaAreaSolar(base) {
   // Boton para definir el acimut optimo
   cell = row.insertCell();
   cell.id = 'AreaSolar.angulosOptimos.'+base.id;
-  cell.setAttribute( "valor", "checked");
   cell.innerHTML = '<input class="form-check-input" type="checkbox" checked>';
+  cell.firstChild.checked = base.angulosOptimos;
   cell.addEventListener('click', (evt) => {angulosOptimos (evt.target)});
 
   // Boton de borrado
@@ -411,7 +474,6 @@ function nuevaFilaEnTablaAreaSolar(base) {
  * @param {Objeto creado por addInteraction} acimutAreaSolar 
  */
 function modificaAcimutAreaSolar ( acimutAreaSolar ) {
-
   // Borramos la linea y el marker si existieran
   origenDatosSolidar.removeFeature(origenDatosSolidar.getFeatureById("AreaSolar.acimut."+featIDActivo));
   origenDatosSolidar.removeFeature(origenDatosSolidar.getFeatureById("AreaSolar.symbol."+featIDActivo));
@@ -428,22 +490,12 @@ function modificaAcimutAreaSolar ( acimutAreaSolar ) {
   let acimut = (Math.atan2(point1[0] - point2[0], point1[1] - point2[1]) * 180) / Math.PI;
   componente = "AreaSolar.acimut."+featIDActivo;
   document.getElementById(componente).firstChild.value = acimut.toFixed(2);
-  baseActiva.acimut = acimut;
-  //baseActiva.acimutOptimo = false;
+  baseActiva.inAcimut = acimut;
   componente = 'AreaSolar.angulosOptimos.' + featIDActivo;
   document.getElementById(componente).firstChild.checked = false;
 
-  // Creamos el nuevo marker
-  var markerAcimutSymbol = new ol.style.Style({
-    image: new ol.style.Icon({
-      scale: 1,
-      anchor: [0.5, 1],
-      src: "./datos/ABC.svg",
-    }),
-  });
-
   let markerAcimut = new ol.Feature({ geometry: new ol.geom.Point(point2)});
-  markerAcimut.setStyle(markerAcimutSymbol);
+  markerAcimut.setStyle(TCB.markerAcimutSymbol);
   markerAcimut.setId("AreaSolar.symbol."+featIDActivo);
 
   geometriaActiva = { 'nombre':'nada', 'tipo':'nada'}; 
@@ -462,6 +514,13 @@ function nuevoLabel (id, punto, nombreInicial , color, bgcolor) {
   addInteraction();
 }
 
+/**
+ * 
+ * @param {*} feature 
+ * @param {*} texto 
+ * @param {*} colorArray 
+ * @param {*} bgcolorArray 
+ */
 function setLabel ( feature, texto, colorArray, bgcolorArray) {
   let posicionTexto = "center"
   switch (tablaActiva) {
@@ -503,7 +562,6 @@ async function verificaTerritorio (point) {
     return false;
   } else {
     TCB.territorio = territorio;
-    if (territorio !== 'Peninsula') alert (TCB.i18next.t('mapa_MSG_insular')); //Temporalmente avisamos que las tarifas fuera de la peninsula no estan cargadas
     return true;
   }
 }
@@ -604,7 +662,6 @@ function inclinacionPaneles (evento) {
   setActivo(evento);
   baseActiva.inclinacionPaneles = evento.value;
   baseActiva.requierePVGIS = true;
-
   baseActiva.inclinacionOptima = false;
   componente = 'AreaSolar.inclinacionOptima.' + featIDActivo;
   document.getElementById(componente).firstChild.checked = false;
@@ -633,12 +690,12 @@ function inclinacionTejado( evento) {
   setActivo(evento);
   baseActiva.inclinacionTejado = evento.value;
   componente = 'AreaSolar.area.' + featIDActivo;
-  let nuevaArea = baseActiva.area / Math.cos(baseActiva.inclinacionTejado / 180 * Math.PI);
-  let nuevaPotencia = nuevaArea / TCB.parametros.conversionAreakWp;
+  baseActiva.areaReal = baseActiva.area / Math.cos(baseActiva.inclinacionTejado / 180 * Math.PI);
+  baseActiva.potenciaMaxima = baseActiva.areaReal / TCB.parametros.conversionAreakWp;
   componente = 'AreaSolar.areaReal.' + featIDActivo; 
-  document.getElementById(componente).innerHTML = UTIL.formatoValor('area', nuevaArea);
+  document.getElementById(componente).innerHTML = UTIL.formatoValor('area', baseActiva.areaReal);
   componente = 'AreaSolar.potenciaMaxima.' + featIDActivo; 
-  document.getElementById(componente).innerHTML = UTIL.formatoValor('potenciaMaxima', nuevaPotencia);
+  document.getElementById(componente).innerHTML = UTIL.formatoValor('potenciaMaxima', baseActiva.potenciaMaxima);
 }
 
 /** LLamada desde la tabla area al seleccionar el campo Acimut de una fila.
@@ -650,12 +707,11 @@ function inclinacionTejado( evento) {
  function acimutAreaSolar(evento){
   setActivo(evento);
   baseActiva.requierePVGIS = true;
-  //baseActiva.acimutOptimo = false;
   baseActiva.angulosOptimos = false;
   componente = 'AreaSolar.angulosOptimos.' + featIDActivo; 
   document.getElementById(componente).firstChild.checked = false;
   if (evento.nodeName === "INPUT") {
-    baseActiva.acimut = evento.value;
+    baseActiva.inAcimut = evento.value;
     componente = 'AreaSolar.acimut.' + featIDActivo;
     origenDatosSolidar.removeFeature(origenDatosSolidar.getFeatureById(componente)); //Si habia un acimut dibujado lo borramos
     componente = 'AreaSolar.symbol.' + featIDActivo;
@@ -678,7 +734,7 @@ function angulosOptimos (evento) {
     componente = 'AreaSolar.acimut.' + featIDActivo;
     document.getElementById(componente).firstChild.value = "";
     origenDatosSolidar.removeFeature(origenDatosSolidar.getFeatureById(componente));
-    baseActiva.acimut = "";
+    baseActiva.inAcimut = "";
 
     componente = 'AreaSolar.inclinacion.' + featIDActivo;
     document.getElementById(componente).firstChild.value = "";
@@ -698,11 +754,14 @@ function angulosOptimos (evento) {
 function addInteraction() {
   UTIL.mensaje("accionMapa", "mapa_MSG_"+geometriaActiva.tipo);
   map.removeInteraction(draw);
-  if (geometriaActiva.nombre !== 'nada'){  
-    draw = new ol.interaction.Draw({
+  if (geometriaActiva.nombre !== 'nada'){
+    let drawOptions = {
       source: origenDatosSolidar,
       type: geometriaActiva.tipo,
-    });
+    }
+    if (geometriaActiva.nombre === 'acimut') drawOptions.maxPoints = 2;
+    if (geometriaActiva.nombre === 'AreaSolar') drawOptions.maxPoints = 3;
+    draw = new ol.interaction.Draw(drawOptions);
     map.addInteraction(draw); 
     //Si estamos dibujando el acimut de un AreaSolar tomamos el primer punto como el punto de aplicacion del area
     if (geometriaActiva.nombre === 'acimut') {
@@ -719,14 +778,14 @@ function borraObjeto(evento){
 
   setActivo(evento);
   const tablaActiva = filaActiva.parentNode.parentNode;
-
+  TCB.requiereOptimizador = true;
   filaActiva.remove();
   if (tablaActiva.id === "tablaAreaSolar") {
     origenDatosSolidar.removeFeature(origenDatosSolidar.getFeatureById("AreaSolar.area."+featIDActivo));
     origenDatosSolidar.removeFeature(origenDatosSolidar.getFeatureById("AreaSolar.symbol."+featIDActivo));
     origenDatosSolidar.removeFeature(origenDatosSolidar.getFeatureById("AreaSolar.label."+featIDActivo));
     origenDatosSolidar.removeFeature(origenDatosSolidar.getFeatureById("AreaSolar.acimut."+featIDActivo));
-    baseActiva = TCB.bases.find( base => base.id === featIDActivo);
+    baseActiva = TCB.bases.findIndex( base => base.id === featIDActivo);
     TCB.bases.splice(baseActiva, 1);
 
   } else if (tablaActiva.id === "tablaPuntoConsumo") {
@@ -790,4 +849,12 @@ async function construirPuntoConsumo ( puntoConsumo) {
     nuevaFilaEntablaPuntoConsumo( nuevoConsumo);
 }
 
-export { gestionLocalizacion };
+function salvarDatosMapa () {
+  var writer = new ol.format.GeoJSON();
+  var objetosSolidar = origenDatosSolidar.getFeatures();
+  var geojsonStr = writer.writeFeatures(objetosSolidar); 
+  return geojsonStr;
+}
+
+
+export { gestionLocalizacion, salvarDatosMapa };

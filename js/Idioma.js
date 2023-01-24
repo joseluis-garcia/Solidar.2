@@ -14,13 +14,13 @@
         locales: ['es', 'ca', 'ga', 'en', 'eu'],
         backend: {loadPath: './locales/{{lng}}.json'}       
         }, (err, t) => {
-        if (err) return console.error(err);
-        traduce(TCB.i18next.language);
-    })};
+            if (err) return console.error(err);
+            traduce(TCB.i18next.language);
+        })};
+    UTIL.debugLog("i18next cambiando idioma a " + idioma);
 
     function traduce( idioma) {
         idioma = idioma.substring(0,2); //Ignoramos los casos en-US o es-ES
-        UTIL.debugLog("i18next cambiando idioma a " + idioma);
         TCB.i18next.changeLanguage(idioma, (err, t) => {
         if (err) return console.log(err);
         let t_i18n = document.querySelectorAll('[data-i18n]');

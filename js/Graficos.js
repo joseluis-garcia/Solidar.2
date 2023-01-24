@@ -114,7 +114,7 @@ export default class Graficos {
 
         var gd = document.getElementById(donde1);
         gd.addEventListener('click', function(evt) {
-
+            document.getElementById(donde2).style.display = "block";
             var posicion = this.getBoundingClientRect();
             var xaxis = this._fullLayout.xaxis;
             var yaxis = this._fullLayout.yaxis;

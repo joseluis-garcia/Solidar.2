@@ -3,7 +3,7 @@ import * as UTIL from "./Utiles.js"
   
   //Botones del formulario de parametros para descargar matrices de los objetos de la aplicación
   //Estas funciones permiten descargar las tablas de la aplicación para verificacion o debug
-  function inicializaEventosParametros() {
+function inicializaEventosParametros() {
 
 /* Las funciones de dump de datos de produccion y rendimiento se deben redefinir al existir multiples bases
   document.getElementById("dumpConsumo").addEventListener("click", function handleChange(event) { 
@@ -50,13 +50,21 @@ import * as UTIL from "./Utiles.js"
       reader.readAsText(this.files[0]);
     }
   });
+}
+
+function importa( datosImporta) {
+  for (let param in datosImporta.parametros) {
+    TCB.parametros[param] = datosImporta.parametros[param];
+    let campo = document.getElementById(param);
+    campo.value = TCB.parametros[param];
   }
+  return;
+}
 
-  export default function gestionParametros() {
+export default function gestionParametros() {
 
-    inicializaEventosParametros();
-    // Los parametros estan definidos en el objeto TCB.parametros
-
+  inicializaEventosParametros();
+  // Los parametros estan definidos en el objeto TCB.parametros
   // Este modulo asigna los valores por defecto inicializados en TCB y asigna eventlisteners para cambiar la TCB en funcion de lo
   // entrado por el usuario en el formulario de parametros
   for (let param in TCB.parametros) {
@@ -68,4 +76,4 @@ import * as UTIL from "./Utiles.js"
   }
 }
 
-export {gestionParametros}
+export {gestionParametros, importa}

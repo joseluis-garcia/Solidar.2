@@ -1,6 +1,6 @@
 import * as UTIL from "./Utiles.js";
 import Instalacion from "./Instalacion.js";
-import Produccion from "./Produccion.js";
+//import Produccion from "./Produccion.js";
 
 async function optimizador( bases, consumo, potenciaPanelInicio) {
 

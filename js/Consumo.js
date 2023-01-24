@@ -11,8 +11,10 @@ export default class Consumo {
     for (let i = 0; i < 365; i++) {
       this.idxTable[i] = { previos: 0, dia: i, mes: 0, suma: 0, maximo: 0 };
     }
+
     this.maximoAnual = 0;
     this.totalAnual = 0;
+
     if (puntoConsumo !== undefined) { //Viene un puntoConsumo del mapa
       this.id = puntoConsumo.id;
       this.nombre = puntoConsumo.nombre;
@@ -21,17 +23,20 @@ export default class Consumo {
       this.potenciaREE = puntoConsumo.potenciaREE;
       this.ficheroCSV = puntoConsumo.ficheroCSV;
       this.nombreTarifa = puntoConsumo.nombreTarifa;
-      this.csvCargado = false;
-
-      this.fechaInicio = new Date(1, 1, 1900);
-      this.horaInicio = -1;
-      this.fechaFin = new Date(1, 1, 1900);
-      this.horaFin = -1;
-
-      this.numeroRegistros = 0;
+      this.territorio = puntoConsumo.territorio;
+      this.numeroRegistros = puntoConsumo.numeroRegistros;
+      UTIL.debugLog("Cargando consumo con tarifa: "+this.nombreTarifa +"-"+this.territorio);
+      this.tarifa = new Tarifa(this.nombreTarifa, this.territorio);
       this.numeroDias = 0;
-      UTIL.debugLog("Cargando consumo con tarifa: "+this.nombreTarifa +"-"+TCB.territorio);
-      this.tarifa = new Tarifa(this.nombreTarifa, TCB.territorio);
+
+      if (!TCB.importando) {
+        this.csvCargado = false;
+        this.fechaInicio = new Date(1, 1, 1900);
+        this.horaInicio = -1;
+        this.fechaFin = new Date(1, 1, 1900);
+        this.horaFin = -1;
+        this.numeroRegistros = 0;
+      } 
 
     } else { // Es la construccion del consumo que sintetiza todos los consumos individuales
       let ultimaFechaFin = new Date(1, 1, 1900); 
@@ -51,14 +56,23 @@ export default class Consumo {
         this.fechaFin = ultimaFechaFin;
         this.fechaInicio = new  Date(1, 1, this.fechaFin.getFullYear());
       }
+      this.tarifa = TCB.consumos[0].tarifa; // Copiamos la unica tarifa existente.
       this.sintesis();
     }
+
     this.economico = {};
   } // End constructor
 
   async loadCSV() {
     var campo;
     var lastLine;
+
+    // Inicializa la tabla indice de acceso
+    this.diaHora = Array.from(Array(365), () => new Array(24).fill(0));
+    for (let i = 0; i < 365; i++) {
+      this.idxTable[i] = { previos: 0, dia: i, mes: 0, suma: 0, maximo: 0 };
+    }
+
     const reader = new FileReader();
     return new Promise((resolve, reject) => {
       reader.onerror = () => {
@@ -99,7 +113,6 @@ export default class Consumo {
           // Se han detectado ficheros de Naturgy con registros vacios al final del mismo
           // si el campo fecha viene vacio consideramos que hay que ignorar el regsitro
           let vacio = false; 
-
           for (var i = 0; i < data.length; i++) {
             lastLine = data[i];
             if (data[i]["Fecha"] === "") {
@@ -127,9 +140,7 @@ export default class Consumo {
 
             if (currFecha.getTime() == lastFecha.getTime()) {
               //debemos cambiar la , por el . para obtener el valor
-              unDia.valores[hora] =
-                parseFloat(data[i][campo].replace(decimalCaracter, ".")) *
-                this.potenciaREE;
+              unDia.valores[hora] = parseFloat(data[i][campo].replace(decimalCaracter, ".")) * this.potenciaREE;
             } else {
               if (i == 0) {
                 unDia = {
@@ -137,10 +148,7 @@ export default class Consumo {
                   mes: currFecha.getMonth(),
                   valores: Array(24).fill(0),
                 };
-                unDia.valores[hora] =
-                  parseFloat(
-                    data[i][campo].replace(decimalCaracter, ".")
-                  ) * this.potenciaREE;
+                unDia.valores[hora] = parseFloat(data[i][campo].replace(decimalCaracter, ".")) * this.potenciaREE;
               } else {
                 UTIL.mete(unDia, this.idxTable, this.diaHora);
                 unDia = {
@@ -148,10 +156,7 @@ export default class Consumo {
                   mes: currFecha.getMonth(),
                   valores: Array(24).fill(0),
                 };
-                unDia.valores[hora] =
-                  parseFloat(
-                    data[i][campo].replace(decimalCaracter, ".")
-                  ) * this.potenciaREE;
+                unDia.valores[hora] = parseFloat(data[i][campo].replace(decimalCaracter, ".")) * this.potenciaREE;
               }
               lastFecha = currFecha;
               if (isNaN(unDia.valores[hora])) {
@@ -161,7 +166,9 @@ export default class Consumo {
             }
           }
           // Si el ultimo registro no vino vacio lo metemos
-          if (!vacio) UTIL.mete(unDia, this.idxTable, this.diaHora);
+          if (!vacio) {
+            UTIL.mete(unDia, this.idxTable, this.diaHora);
+          }
           this.fechaFin = lastFecha;
           this.horaFin = hora;
           this.numeroRegistros = data.length;
@@ -214,10 +221,11 @@ export default class Consumo {
       this.totalAnual += this.idxTable[i].suma;
     }
     this.csvCargado = true;
-    UTIL.debugLog("Consumo:", {desde: this.fechaInicio,
+    UTIL.debugLog("Sintesis Consumo:", {desde: this.fechaInicio,
       hasta: this.fechaFin,
       maximo: this.maximoAnual.toFixed(2), 
-      dia: UTIL.fechaDesdeIndice(maxIDX), 
+      diaMaximo: UTIL.fechaDesdeIndice(maxIDX), 
+      numeroDias: this.numeroDias,
       total: this.totalAnual.toFixed(2), 
       mensual: (this.totalAnual / 12).toFixed(2),
       diaria:  (this.totalAnual / 365).toFixed(2)});   

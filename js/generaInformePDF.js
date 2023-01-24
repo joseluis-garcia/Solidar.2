@@ -1,5 +1,7 @@
 import TCB from "./TCB.js";
 import {suma, obtenerPropiedades, formatoValor, campos} from "./Utiles.js";
+//import { jsPDF } from "jspdf";
+const { jsPDF } = window.jspdf;
 
 var doc;
 function newDoc() {
@@ -56,7 +58,6 @@ async function generaInformePDF() {
       });
     }
     let dBody = dTabla.slice(0, i);
-    console.log(dBody);
 
 doc.autoTable({
   willDrawCell: (data) => {
@@ -152,12 +153,15 @@ doc.addPage();
     i = 1;
     nuevaLinea('Cabecera',null, null, 'main_LBL_titulo');
     nuevaLinea('Titulo',i++, null, 'informe_LBL_balanceEconomico');
-    nuevaLinea('Dato', i++, 'consumo_LBL_tarifa', TCB.tarifaActiva, "");
-/*     nuevaLinea('Dato', i++, 'precios_LBL_compensa', formatNumber(TCB.tarifas[TCB.tarifaActiva].precios[0], 2), "€/kWh");
-    for (let j=1; j<TCB.tarifas[TCB.tarifaActiva].precios.length; j++) {
-      if (TCB.tarifas[TCB.tarifaActiva].precios[j] > 0)
-      nuevaLinea('Dato', i++, "P"+j, formatNumber(TCB.tarifas[TCB.tarifaActiva].precios[j], 2), "€/kWh");
-    } */
+    let tarifaActiva = TCB.consumo.tarifa.nombreTarifa
+    if (tarifaActiva === "3.0TD") tarifaActiva += " (" + TCB.consumo.tarifa.territorio + ")";
+    nuevaLinea('Dato', i++, 'consumo_LBL_tarifa', tarifaActiva, "");
+    nuevaLinea('Dato', i++, 'consumo_LBL_compensa', formatNumber(TCB.consumo.tarifa.precios[0], 3), " €/kWh");
+    for (let j=1; j<=6; j++) {
+      if (TCB.consumo.tarifa.precios[j] > 0) 
+          nuevaLinea('Dato', i++, "P"+j, formatNumber(TCB.consumo.tarifa.precios[j], 3), " €/kWh");
+    }
+
     let consumoOriginalAnual = suma(TCB.consumo.economico.consumoOriginalMensual);
     let consumoConPlacasAnual = suma(TCB.consumo.economico.consumoConPlacasMensualCorregido);
     nuevaLinea('Dato', i++, 'precios_LBL_gastoAnualSinPlacas', formatNumber(consumoOriginalAnual, 2), "€");
@@ -226,13 +230,13 @@ function nuevaLinea( tipo, linea, propiedad, valor, unidad) {
     let renglon = _hdr + _vert + linea * _delta;
     let hoy = new Date();
 
-    doc.setFontType('normal');
+    doc.setFont(undefined);
     doc.setFontSize(_font[tipo]);
     var textNode;
 
     switch (tipo) {
       case "Cabecera":
-          doc.text(i18next.t(valor), margenIzquierdo, _hdr, {align: 'center'});
+          doc.text(i18next.t(valor), margenIzquierdo, _hdr, 'left');
           doc.setFontSize(_font['Normal']);
           doc.text(i18next.t("proyecto_LBL_nombre_proyecto") + " " + TCB.nombreProyecto, margenIzquierdo, _hdr + 7);
         break;

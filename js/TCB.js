@@ -13,12 +13,24 @@ const TCB = {
     debug : false,
     basePath : "",
     pdfDoc: "",
+    importando: false, //Es verdadero durante el proceso de importacion
     pasoWizard: 0,
+      // Creamos el nuevo marker
+    markerAcimutSymbol : new ol.style.Style({
+            image: new ol.style.Icon({
+            scale: 1,
+            anchor: [0.5, 1],
+            src: "./datos/ABC.svg",
+            }),
+        }),
 
     // Analizar con multiples consumos
     idConsumo: 0,
 
-    map: "",
+    // Variables del mapa
+    map: "", // Objeto OpenLayers base del mapa
+    baseLabelColor: [0, 0, 0, 1], 
+    baseLabelBGColor: [168, 50, 153, 0.1],
     nombreProyecto: "",
     territorio: "Peninsula",
     pdf : "",
@@ -29,6 +41,7 @@ const TCB = {
     produccionCreada : false,
     balanceCreado : false,
     economicoCreado : false,
+    requiereOptimizador : true,
 
     //Algunos valores por defecto
     tarifaActiva : '2.0TD',
@@ -142,7 +155,7 @@ const TCB = {
         {"desde":20, "hasta":25, "precio":1000},
         {"desde":25, "hasta":100, "precio": 950}
     ],
-    correccionPrecioInstalacion : 0,
+    correccionPrecioInstalacion : 1,
     
     subvencionEU : {
         'Individual': {'<=10kWp':600, '>10kWp': 450},
@@ -172,7 +185,7 @@ const TCB = {
     },
     AreaBase : {
         geometrias: {area:"", label:"", acimut:"", symbol:""},
-        atributos: {id:"", nombre:"", lonlat:"", area:"", inclinacionTejado:"", areaReal:"", potenciaMaxima:"", inclinacionPaneles:"", inclinacionOptima:"", acimut:"", acimutOptimo:""}
+        atributos: {id:"", nombre:"", lonlat:"", area:"", inclinacionTejado:"", areaReal:"", potenciaMaxima:"", inclinacionPaneles:"", inclinacionOptima:"", inAcimut:"", acimutOptimo:""}
     },
     PuntoConsumo : {
         geometrias: {symbol:"", label:""},

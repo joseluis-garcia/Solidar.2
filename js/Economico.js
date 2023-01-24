@@ -61,7 +61,7 @@ export default class Economico {
       this.idxTable[dia].diaSemana = diaSemana;
 
       for (let hora = 0; hora < 24; hora++) {
-        if (this.tarifa.nombre === "2.0TD") {
+        if (this.tarifa.nombreTarifa === "2.0TD") {
           if (diaSemana == 0 || diaSemana == 6) {             //es un fin de semana por lo que tarifa P3 todo el dia
             this.diaHoraTarifaOriginal[dia][hora] = this.tarifa.precios[3];
           } else {
@@ -178,6 +178,11 @@ export default class Economico {
     }
     this.VANProyecto = this.VAN(this.interesVAN, cuotaPeriodo);
     this.TIRProyecto = this.TIR(this.interesVAN * 2, cuotaPeriodo);
+    this.tiempoSubvencionIBI = tiempoSubvencionIBI;
+    this.valorSubvencionIBI = valorSubvencionIBI;
+    this.porcientoSubvencionIBI = porcientoSubvencionIBI;
+    this.valorSubvencionEU = valorSubvencionEU;
+    this.tipoSubvencionEU = tipoSubvencionEU;
   }
 
   // Calculo de TIR
