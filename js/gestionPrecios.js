@@ -1,6 +1,8 @@
 import {formatoValor,  suma, muestra, debugLog} from "./Utiles.js";
 import Economico from "./Economico.js";
+import {calculaResultados} from "./calculaResultados.js";
 import TCB from "./TCB.js";  
+import { nuevoTotalPaneles } from "./optimizador.js";
 
 export default function gestionPrecios( accion, datos) {
   debugLog("gestionPrecios: " + accion);
@@ -78,32 +80,108 @@ function valida() {
 
 async function prepara() {
 
-    TCB.consumos.forEach ((consumo) => {
-        if (consumo.economicoCreado) {
-            delete consumo.economico;
-            consumo.economicoCreado = false;
-        }
-        consumo.economico = new Economico(consumo);
-        consumo.economicoCreado = true;
-    })
     // Teniendo en cuenta que puede haber muchos consumos y cada uno con su tarifa, debemos mantener un economico para cada consumo
     // Por ahora solo gestionamos el TCB.consumo que es igual a TCB.consumos[0].
     //TCB.consumo.economico = new Economico( );
     TCB.consumo.economico = TCB.consumos[0].economico;
-    
-    muestra("gastoAnualSinPlacas", "", formatoValor('dinero', TCB.consumo.economico.consumoOriginalAnual));
-    muestra("gastoAnualConPlacas", "", formatoValor('dinero', TCB.consumo.economico.consumoConPlacasAnual));
-    muestra("ahorroAnual", "", formatoValor('dinero', TCB.consumo.economico.ahorroAnual));
-    muestra("costeInstalacion","",formatoValor('dinero', TCB.produccion.precioInstalacion));
-    muestra("costeCorregido", "", formatoValor('dinero', TCB.produccion.precioInstalacionCorregido));
-    muestra("noCompensado", "", formatoValor('dinero', suma(TCB.consumo.economico.perdidaMes)));
-    muestra("ahorroAnualPorCiento", "",formatoValor('porciento',((TCB.consumo.economico.consumoOriginalAnual - TCB.consumo.economico.consumoConPlacasAnual) / TCB.consumo.economico.consumoOriginalAnual * 100)));
-
+   
+    muestraDatosEconomicos();
     await muestraBalanceFinanciero();
-    TCB.graficos.balanceEconomico("graf_4");
+    await muestraGraficosEconomicos();
+
     return true;
     
 }
+
+function muestraDatosEconomicos() {
+  muestra("gastoAnualSinPlacas", "", formatoValor('dinero', TCB.consumo.economico.consumoOriginalAnual));
+  muestra("gastoAnualConPlacas", "", formatoValor('dinero', TCB.consumo.economico.consumoConPlacasAnual));
+  muestra("ahorroAnual", "", formatoValor('dinero', TCB.consumo.economico.ahorroAnual));
+  muestra("costeInstalacion","",formatoValor('dinero', TCB.produccion.precioInstalacion));
+  muestra("costeCorregido", "", formatoValor('dinero', TCB.produccion.precioInstalacionCorregido));
+  muestra("noCompensado", "", formatoValor('dinero', suma(TCB.consumo.economico.perdidaMes)));
+  muestra("ahorroAnualPorCiento", "",formatoValor('porciento',((TCB.consumo.economico.consumoOriginalAnual - TCB.consumo.economico.consumoConPlacasAnual) / TCB.consumo.economico.consumoOriginalAnual * 100)));
+  return;
+}
+
+async function muestraGraficosEconomicos() {
+  await graficoAlternativas();
+  TCB.graficos.balanceEconomico("graf_4");
+  return;
+}
+/**
+ * Esta funcion produce el grafico de alternativas para lo que debe realziar todos los calculos para un numero 
+ * determinado de alternativas que se definen dependiendo del numero maximo de paneles que soportan las bases definidas
+ */
+async function graficoAlternativas() {
+
+  var numeroPanelesOriginal = TCB.totalPaneles;
+  var intentos = [0.25, 0.5, 1, 1.5, 2];
+  var paneles = [];
+  var autoconsumo = [];
+  var TIR = [];
+  var autosuficiencia = [];
+  var precioInstalacion = [];
+  var consvsprod = [];
+  var ahorroAnual = [];
+
+  // Calcula el numero maximo de paneles que soportan todas la bases
+  let numeroMaximoPaneles = 0;
+  TCB.bases.forEach ( (base) => { numeroMaximoPaneles +=  Math.trunc(base.potenciaMaxima / base.instalacion.potenciaUnitaria)});
+
+  // El maximo numero de paneles a graficar es el doble de lo propuesto o el maximo numero de paneles
+  let maximoPanelesEnX = numeroMaximoPaneles > (2 * TCB.totalPaneles) ? (2 * TCB.totalPaneles) : numeroMaximoPaneles;
+  var intentos = [1, 0.25*maximoPanelesEnX, 0.5*maximoPanelesEnX,  0.75*maximoPanelesEnX, maximoPanelesEnX]; //, TCB.totalPaneles];
+  intentos.sort((a, b) => a - b);
+
+  // Bucle del calculo de resultados para cada alternativa propuesta
+  intentos.forEach((intento) => {
+    if (intento >= 1) {
+
+      // Establecemos la configuracion de bases para este numero de paneles
+      nuevoTotalPaneles (intento);
+
+      // Se realizan todos los calculos
+      calculaResultados();
+
+      // Se extraen los valores de las variavbles que forman parte del grafico
+      paneles.push(intento);
+      autoconsumo.push((TCB.balance.autoconsumo / TCB.produccion.totalAnual) * 100);
+      autosuficiencia.push((TCB.balance.autoconsumo / TCB.consumo.totalAnual) * 100);
+      consvsprod.push((TCB.consumo.totalAnual/TCB.produccion.totalAnual) * 100);
+      TIR.push(TCB.consumo.economico.TIRProyecto);
+      precioInstalacion.push(TCB.produccion.precioInstalacionCorregido);
+      ahorroAnual.push(TCB.consumo.economico.ahorroAnual);
+
+    }
+  });
+
+  //Dejamos las cosas como estaban al principio antes del loop
+  nuevoTotalPaneles (numeroPanelesOriginal);
+  calculaResultados();
+
+  //Buscamos punto en el que la produccion represente el 80% del consumo anual total para definir el limite subvencion EU
+  console.log("Muestra plot alternativas");
+  let i = 0;
+  while (consvsprod[i] > 80) i++;
+  let pendiente = (consvsprod[i] - consvsprod[i-1]) / (paneles[i] - paneles[i-1]);
+  let dif = 80 - consvsprod[i-1];
+  let limiteSubvencion = paneles[i-1] + dif / pendiente;
+
+  // Producimos el grafico
+  TCB.graficos.plotAlternativas(
+    "graf_5",
+    TCB.bases[0].instalacion.potenciaUnitaria,
+    paneles,
+    TIR,
+    autoconsumo,
+    autosuficiencia,
+    precioInstalacion,
+    ahorroAnual,
+    limiteSubvencion
+  );
+}
+
 
 async function muestraBalanceFinanciero() {
 

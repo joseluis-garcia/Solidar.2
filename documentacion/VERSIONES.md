@@ -70,8 +70,11 @@
 
 ## 20230124
 - Las bases se dibujan con tres puntos
-- El acimut solo admite un punto
+- El acimut solo requiere un punto
 - Importación y exportación de proyecto
-- Cambiados los campos que premiten identificar un fichero
+- Cambiados los campos que permiten identificar un fichero
 - Añadido precios tarifa a resumen y reportePDF
+
+## 20230207
+- Añadido fit despues del import
 

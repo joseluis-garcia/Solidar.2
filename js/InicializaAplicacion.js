@@ -98,6 +98,11 @@ export default async function inicializaEventos() {
     });
   }
 
+  //Funcion para limpiar el campo descripcion del formulario de contacto cada vez que se muestra el mismo. El resto de campos se mantienen.
+  document.getElementById('formularioContacto').addEventListener('show.bs.modal', function (e) {
+    document.getElementById('mensaje').value="";
+  })
+
   // Inicializa formulario de parametros
   UTIL.debugLog("_initEvents call gestionParametros");
   gestionParametros();

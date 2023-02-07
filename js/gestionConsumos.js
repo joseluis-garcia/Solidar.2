@@ -12,6 +12,8 @@ import TCB from "./TCB.js";
 import * as UTIL from "./Utiles.js";
 import Consumo from "./Consumo.js";
 import Tarifa from "./Tarifa.js";
+import { calculaResultados } from "./calculaResultados.js";
+import {optimizador} from "./optimizador.js";
 
 // Estas variables son para cuando tengamos mas de un consumo en la tablaConsumos
 var filaActiva;
@@ -216,6 +218,16 @@ async function valida() {
       }
     }
   }
+
+  /*  
+  Si estamos importando se respeta la asignacion de paneles que viene en el fichero de importación
+  en caso contrario se llama al optimizador
+*/
+  if (TCB.requiereOptimizador) {
+    optimizador (TCB.bases, TCB.consumo,  TCB.parametros.potenciaPanelInicio);
+    TCB.requiereOptimizador = false;
+  }
+  calculaResultados();
   return status;
 }
 

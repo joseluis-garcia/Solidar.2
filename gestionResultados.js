@@ -1,13 +1,10 @@
 
-import {optimizador, nuevoTotalPaneles} from "./optimizador.js";
+import {optimizador} from "./optimizador.js";
 import TCB from "./TCB.js";
 import Produccion from "./Produccion.js";
 import Balance from "./Balance.js";
 import Instalacion from "./Instalacion.js";
-import Economico from "./Economico.js";
 import {formatoValor, muestraAtributos, muestra, debugLog} from "./Utiles.js";
-import gestionPrecios from "./gestionPrecios.js";
-import { calculaResultados } from "./calculaResultados.js";
 
 async function gestionResultados( accion, datos) {
     let status;
@@ -43,26 +40,51 @@ function importa(datosImportar) {
     TCB.bases[i].instalacion = new Instalacion(base.paneles, base.potenciaUnitaria);
     TCB.bases[i++].instalacion.precioFinal =  base.precioInstalacionCorregido;
   })
+
+/*   TCB.produccion.precioInstalacionCorregido = datosImportar.precioInstalacionCorregido;
+  TCB.produccion.precioInstalacion = datosImportar.precioInstalacion; */
 }
 
-function prepara( ) {
-/*  
-  Si estamos importando se respeta la asignacion de paneles que viene en el fichero de importación
-  en caso contrario se llama al optimizador
-*/
-/*   if (TCB.requiereOptimizador) {
+function prepara() {
+/*  Si estamos importando se respeta la asignacion de paneles que viene en el fichero de importación
+    en caso contrario se llama al optimizador */
+  if (TCB.requiereOptimizador) {
     optimizador (TCB.bases, TCB.consumo,  TCB.parametros.potenciaPanelInicio);
     TCB.requiereOptimizador = false;
-  } */
+  }
 
-  muestraTablaBases( 'tablaBases' );
-  muestraBalanceEnergia();
-  muestraGraficos();
+// Se genera un objeto produccion para cada una de las bases
+  TCB.bases.forEach( (base) => {
+    if (base.produccionCreada) {
+      base.produccion = {};
+      base.produccionCreada = false;
+    }
+    base.produccion = new Produccion( base);
+  });
+
+// Se genera un objeto produccion que totaliza la produccion de cada una de las bases
+  if (TCB.produccion.produccionCreada) {
+      TCB.produccion.produccion = {};
+      TCB.produccion.produccionCreada = false;
+  }
+  TCB.produccion = new Produccion();
+  TCB.produccion.produccionCreada = true;
+
+// Construccion objeto Balance global
+  if (TCB.balanceCreado) {
+    TCB.balance = {};
+    TCB.balanceCreado = false;
+  }
+  TCB.balance = new Balance(TCB.produccion, TCB.consumo);
+  TCB.balanceCreado = true;
+
+  if (TCB.balanceCreado) muestraBalanceEnergia();
   return true;
-
 }
 
 function muestraBalanceEnergia() {
+    // Muestra la tabla de bases al inicio del balance de energía
+    tablaBases ( "tablaBases");
 
     // Mostramos todos los campos
     muestra("objetivoHora", "", formatoValor('energia', TCB.consumo.maximoAnual));
@@ -94,18 +116,13 @@ function muestraBalanceEnergia() {
     muestra("porcientoAutoconsumo", autoConsumo, "");
     muestra("porcientoAutosuficiencia", "", formatoValor('porciento',p_autosuficiencia));
     muestra("autosuficienciaMaxima", "",formatoValor('porciento', p_autosuficiencia + 100 - p_autoconsumo));
-    return;
+  
+    TCB.graficos.resumen_3D("graf_resumen");
+    TCB.graficos.consumos_y_generacion("graf_1");
+    TCB.graficos.balanceEnergia("graf_2", "graf_3");
 }
 
-function muestraGraficos() {
-  TCB.graficos.resumen_3D("graf_resumen");
-
-}
-/**
- * Muestra el resultado de la asignacion que se hubiera hecho de paneles a bases
- * @param {String} tablaDonde Nombre de la tabla donde se muestran los detalles
- */
-function muestraTablaBases ( tablaDonde) {
+function tablaBases ( tablaDonde) {
 
     let tabla = document.getElementById(tablaDonde);
     var rowCount = tabla.rows.length;
@@ -158,28 +175,21 @@ function muestraTablaBases ( tablaDonde) {
           cell.addEventListener('click', (evt) => {muestraAtributos('base', id, evt)});  
       }
   }
-
-  // 
-  /**
-   * Funcion para gestionar el evento generado por cambio de paneles o potenciaUnitaria en la tabla de bases
-   * @param {Event} evento 
-   */
+  // Evento para gestionar el cambio de paneles o potenciaUnitaria en la tabla de bases
   function nuevaInstalacion (evento) {
       let tmpPotenciaUnitaria;
       let tmpPaneles;
       let filaActiva = evento.target.parentNode.parentNode;
       let featID = filaActiva.cells[0].outerText;
 
-      //Se identifica la base que se esta modificnado
       let baseActiva = TCB.bases.find( e => e.id === featID);
       if (evento.target.id[0] === 'J') { //Cambio paneles
-          tmpPaneles = parseFloat(evento.target.value);
+          tmpPaneles = evento.target.value;
           tmpPotenciaUnitaria = baseActiva.instalacion.potenciaUnitaria;
-      } else { //Cambio de potencia unitaria de paneles
+      } else {
           tmpPaneles = baseActiva.instalacion.paneles;
-          tmpPotenciaUnitaria = parseFloat(evento.target.value);
+          tmpPotenciaUnitaria = evento.target.value;
       }
-
       if ((tmpPaneles * tmpPotenciaUnitaria) > baseActiva.potenciaMaxima) {
           alert (i18next.t('resultados_MSG_excesoPotencia'));
           document.getElementById("J"+featID).value = baseActiva.instalacion.paneles;
@@ -187,11 +197,31 @@ function muestraTablaBases ( tablaDonde) {
       } else {
           baseActiva.instalacion.potenciaUnitaria = tmpPotenciaUnitaria;
           baseActiva.instalacion.paneles = tmpPaneles;
-          TCB.totalPaneles = TCB.bases.reduce((a, b) => { a + b.instalacion.paneles }, 0);
-          console.log(TCB.totalPaneles);
-          calculaResultados();
-          prepara();
+          cambioInstalacion(baseActiva);
+          muestraBalanceEnergia();
+/*           document.getElementById("J"+featID).value = baseActiva.instalacion.paneles;
+          document.getElementById("G"+featID).value = baseActiva.instalacion.potenciaUnitaria; */
       }
   }
 
-export {gestionResultados, muestraBalanceEnergia}
+  async function cambioInstalacion(base) {
+
+    if (base.produccionCreada) {
+      base.produccion = {};
+      base.produccionCreada = false;
+    }
+  
+    // creando nueva produccion
+    base.produccion = new Produccion(base);
+    base.produccionCreada = true;
+    if (TCB.balanceCreado) {
+      TCB.balance = {};
+      TCB.balanceCreado = false;
+    }
+    TCB.produccion = new Produccion(); // despues de cambiar la produccion de una base se debe recalcular la produccion del conjunto
+    TCB.balance = new Balance(TCB.produccion, TCB.consumo);
+    TCB.balanceCreado = true;
+    return true;
+  }
+
+export {gestionResultados}

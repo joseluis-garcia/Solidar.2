@@ -5,7 +5,8 @@ const TCB = {
     economico:"", // Este campo contiene la suma de todos las consumos.economico[]
     bases:[],
     produccion:"", // Este campo contiene la suma de todos las bases.produccion[]
-
+    totalPaneles:"", //Numero total de paneles entre todas las bases
+    areaTotal:"",
     balance:"",
     graficos:"",
 

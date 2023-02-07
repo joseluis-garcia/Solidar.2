@@ -123,7 +123,7 @@
 "consumo_TT_valorCompensa":"Indicate the price in euros without VAT with which the electricity company pays the electricity not consumed",
 "consumo_TT_ficheroTarifas":"The user can customize a file with different prices while complying with the format given in the example",
 "consumo_LBL_ficheroTarifas":"Local Rate file (see example)",
-"parametros_LBL_conversionAreakWp":"kWp that can be installed per square meter available",
+"parametros_LBL_conversionAreakWp":"square metres required per installed kWp",
 "parametros_TT_conversionAreakWp":"This value will be used to know how many KWP can be installed in a defined area. KWP maximum = area in square meters / this parameter",
 "parametros_LBL_impuestoElectrico":"Electrical tax in %",
 "parametros_TT_impuestoElectrico":"The Special Electricity Tax",

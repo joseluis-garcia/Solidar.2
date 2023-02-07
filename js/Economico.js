@@ -2,6 +2,7 @@ import TCB from "./TCB.js";
 import * as UTIL from "./Utiles.js";
 
 export default class Economico {
+  
   constructor( consumo) {
     // Mietras no tengamos gestion multiconsumo
     if (consumo === undefined) {

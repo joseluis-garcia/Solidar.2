@@ -1,6 +1,12 @@
 import * as UTIL from "./Utiles.js";UTIL
 import TCB from "./TCB.js";
 
+import {nuevoTotalPaneles} from "./optimizador.js";
+import {calculaResultados} from "./calculaResultados.js";
+import {gestionPrecios} from "./gestionPrecios.js";
+import {gestionResultados, muestraBalanceEnergia} from "./gestionResultados.js";
+import { gestionGraficos } from "./gestionGraficos.js";
+
 export default class Graficos { 
 
     constructor(lon, lat, inclinacion, acimut) {
@@ -114,6 +120,9 @@ export default class Graficos {
 
         var gd = document.getElementById(donde1);
         gd.addEventListener('click', function(evt) {
+            // Cuando click en zona del grafico llega un MouseEvent en caso contrario es un PointerEvent y lo ignoramos
+            if (evt instanceof PointerEvent) return;
+            
             document.getElementById(donde2).style.display = "block";
             var posicion = this.getBoundingClientRect();
             var xaxis = this._fullLayout.xaxis;
@@ -378,7 +387,7 @@ export default class Graficos {
     }
 
     plotAlternativas (donde, potencia_kWp, paneles, TIR, autoconsumo, autosuficiencia, precioInstalacion, ahorroAnual, limiteSubvencion) {
-
+console.log(paneles);
         var trace_TIR = {
             x: paneles,
             y: TIR,
@@ -416,6 +425,9 @@ export default class Graficos {
             type: 'scatter'
         };
 
+        var numeroMaximoPaneles = 0;
+        TCB.bases.forEach ( (base) => { numeroMaximoPaneles +=  Math.trunc(base.potenciaMaxima / base.instalacion.potenciaUnitaria)});
+
         var layout = {
             paper_bgcolor:'rgba(0,0,0,0)',
             plot_bgcolor:'rgba(0,0,0,0)',
@@ -440,8 +452,8 @@ export default class Graficos {
             shapes: [
                 {
                 type: 'line',
-                x0: TCB.instalacion.paneles, y0: 0,
-                x1: TCB.instalacion.paneles, y1: 100,
+                x0: TCB.totalPaneles, y0: 0,
+                x1: TCB.totalPaneles, y1: 100,
                 line: {color: 'rgb(55, 128, 191)', width: 3}
                 },
                 {
@@ -455,23 +467,46 @@ export default class Graficos {
                 x0: limiteSubvencion, y0: 0,
                 x1: limiteSubvencion, y1: 80,
                 line: {color: 'rgb(87, 202, 0)', width: 2}
-                }
+                },
+
             ],
             annotations: [
                 {
-                    x: TCB.instalacion.paneles, y: 100,
+                    x: TCB.totalPaneles, y: 100,
                     xref: 'x', yref: 'y',
-                    text: TCB.instalacion.paneles + " " + TCB.i18next.t("graficos_LBL_paneles"),
+                    text: TCB.totalPaneles + " " + TCB.i18next.t("graficos_LBL_paneles"),
                     showarrow: true,
                     arrowhead: 2,
                     xanchor: 'left',
-                    hovertext: TCB.i18next.t("graficos_LBL_panelesActuales",{paneles: TCB.instalacion.paneles}),
+                    hovertext: TCB.i18next.t("graficos_LBL_panelesActuales",{paneles: TCB.totalPaneles}),
                     ax: 20,
                     ay: -20
-                }
+                },
             ]
         };
-        
+
+        if (numeroMaximoPaneles === paneles[4]) {
+            layout.annotations.push(
+                {
+                    x: numeroMaximoPaneles, y: 100,
+                    xref: 'x', yref: 'y',
+                    text: i18next.t("graficos_LBL_numeroMaximoPaneles", {'paneles': numeroMaximoPaneles}),
+                    showarrow: true,
+                    arrowhead: 3,
+                    xanchor: 'right',
+                    hovertext: i18next.t("graficos_LBL_maximoPanelesExplicacion", {'area':TCB.areaTotal}),
+                    ax: -20,
+                    ay: -5
+                });
+            layout.shapes.push(
+                {
+                    type: 'line',
+                    x0: numeroMaximoPaneles, y0: 0,
+                    x1: numeroMaximoPaneles, y1: 100,
+                    line: {color: 'rgb(250, 20, 0)', width: 2}
+                })
+        }
+
         if (limiteSubvencion !== undefined) {
             layout.annotations.push({
                 x: limiteSubvencion, y: 80,
@@ -485,37 +520,43 @@ export default class Graficos {
                 ay: 0
             })
         }
-
+       
         var data = [trace_TIR, trace_autoconsumo, trace_autosuficiencia, trace_precioInstalacion, trace_ahorroAnual];
         Plotly.react(donde, data, layout)
 
         var gd = document.getElementById(donde);
         var xInDataCoord;
         var yInDataCoord;
-        var xaxis = gd._fullLayout.xaxis;
-        var yaxis = gd._fullLayout.yaxis;
-        var l = gd._fullLayout.margin.l;
-        var t = gd._fullLayout.margin.t;
-        var r = gd._fullLayout.margin.r;
-        var w = gd._fullLayout.margin.width;
-    
+   
         if (this.init) {
             this.init = false;
             gd.addEventListener('click', function(evt) {
-                if (TCB.instalacion.paneles != Math.round(xInDataCoord)) {
-                    document.getElementById("numeroPaneles").value =  Math.round(xInDataCoord);
-                    TCB.instalacion.paneles = Math.round(xInDataCoord);
-                    Dispatch("Cambio instalacion");
+
+                // Cuando click en zona del grafico llega un MouseEvent en caso contrario es un PointerEvent y lo ignoramos
+                if (evt instanceof PointerEvent) return;
+
+                if (TCB.totalPaneles != Math.round(xInDataCoord)) {
+                    if (Math.round(xInDataCoord) > numeroMaximoPaneles) return;
+                    TCB.totalPaneles = Math.round(xInDataCoord);
+                    UTIL.debugLog("Grafico alternativas cambia a " + Math.round(TCB.totalPaneles ));
+
+                    nuevoTotalPaneles ( TCB.totalPaneles);
+                    calculaResultados();
+                    gestionResultados('Prepara');
+                    gestionPrecios('Prepara');
+                    gestionGraficos('Prepara');
                 }
             });
             
             gd.addEventListener('mousemove', function(evt) {
-                xInDataCoord = xaxis.p2c(evt.x - l);
-                yInDataCoord = yaxis.p2c(evt.y - t);
+                var bb = evt.target.getBoundingClientRect();
+                xInDataCoord = gd._fullLayout.xaxis.p2d(evt.clientX - bb.left);
+                yInDataCoord = gd._fullLayout.yaxis.p2d(evt.clientY - bb.top);
+
                 // Se limita el número de paneles que se puede seleccionar del gráfico desde 1 al máximo mostrado
                 if (Math.round(xInDataCoord) > 0 && Math.round(xInDataCoord) <= paneles[paneles.length - 1]) {
                     Plotly.relayout(gd, 'title', 
-                        [i18next.t('graficos_LBL_alternativasPotencia', {potencia: formatValor('potencia', potencia_kWp)}), 
+                        [i18next.t('graficos_LBL_alternativasPotencia', {potencia: UTIL.formatoValor('potencia', potencia_kWp)}), 
                         i18next.t('graficos_LBL_cambiaPaneles', {paneles: Math.round(xInDataCoord)})].join("<br>"));
                 }
             });

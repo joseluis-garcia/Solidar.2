@@ -6,6 +6,7 @@ import { gestionConsumos } from "./gestionConsumos.js";
 import { gestionResultados } from "./gestionResultados.js";
 import { gestionPrecios } from "./gestionPrecios.js";
 import * as GestionParametros from "./gestionParametros.js";
+import { calculaResultados } from "./calculaResultados.js";
 /**
  * Es la función llamada desde InicializaAplicacion para cargar la informacion de proyecto y el boton de salvar
  * 
@@ -131,7 +132,8 @@ async function importarProyecto(fichero) {
 
   TCB.requiereOptimizador = false;
   btnLabel.innerText = i18next.t('proyecto_LBL_importando') + ' Balances ' ;
-  await gestionResultados( 'Prepara', datosImportar);
+  calculaResultados();
+  //await gestionResultados( 'Prepara', {'numeroPaneles':0, 'loopAlternativas':false}); //datosImportar);
 
   btnLabel.innerText = i18next.t('proyecto_LBL_importando') + ' Precios ';
   gestionPrecios( 'Importa', datosImportar);
@@ -185,7 +187,6 @@ function exportarProyecto (evento) {
     }
 
     proyecto.correccionPrecioInstalacion = TCB.correccionPrecioInstalacion;
-    console.log(TCB.precioInstalacion);
     proyecto.precioInstalacion = TCB.precioInstalacion;
     export2txt (proyecto);
 }

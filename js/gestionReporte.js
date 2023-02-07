@@ -46,6 +46,7 @@ async function prepara() {
     for(let k=0; k<TCB.bases.length; k++) {
       let j = 0;
       const propiedades = obtenerPropiedades ( TCB.bases[k], 0);
+
       propiedades.forEach ( (p) => {
         if (p.valor === "Objeto") {
           if (k == 0) {

@@ -123,7 +123,7 @@
 	"consumo_TT_valorCompensa":"Indiqueu el preu en euros sense IVA amb el qual el comercialitzador paga l’electricitat no consumida",
 	"consumo_TT_ficheroTarifas":"L'usuari pot personalitzar un fitxer amb els preus que vulgueu, tot complint el format indicat a l'exemple",
 	"consumo_LBL_ficheroTarifas":"Fitxer de tarifa local (vegeu l'exemple)",
-	"parametros_LBL_conversionAreakWp":"KWP que es pot instal·lar per metre quadrat disponible",
+	"parametros_LBL_conversionAreakWp":"metres quadrats necessaris per cada kWp instal·lat",
 	"parametros_TT_conversionAreakWp":"Aquest valor s'utilitzarà per saber quants KWP es poden instal·lar en una àrea definida. KWP màxim = àrea en metres quadrats / aquest paràmetre",
 	"parametros_LBL_impuestoElectrico":"Impost elèctric en %",
 	"parametros_TT_impuestoElectrico":"L’impost especial de l’electricitat",

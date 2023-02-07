@@ -29,7 +29,7 @@ var campos = {
   "tipoSubvencionEU": {"unidad": "", "salvar":true, "mostrar":true},
   "valorSubvencionEU": {"unidad": "", "salvar":false, "mostrar":true},
   "ficheroCSV": {"unidad": "", "salvar":false, "mostrar":true},
-  
+
   "nombreTarifa":{"salvar":true, "mostrar":true},
   "precios":{"salvar":true, "mostrar":true},
   "horas":{"salvar":true, "mostrar":true},
@@ -382,10 +382,11 @@ function formularioAtributos (objeto, descripcion, yesBtnLabel = 'Yes', noBtnLab
  * @returns [{'nombre propiedad', 'valor propiedad}]
  */
 var prop_val;
+
 function obtenerPropiedades ( objeto, nivel) {
   if (objeto === undefined || objeto === null) return;
   if (nivel == 0 ) prop_val = [];
-  const propiedades = Object.getOwnPropertyDescriptors(objeto); 
+  const propiedades = Object.getOwnPropertyDescriptors(objeto);
   for (let prop in propiedades) {
     if (!Array.isArray(objeto[prop])) {
       let tipoPropiedad = typeof objeto[prop];

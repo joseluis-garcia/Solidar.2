@@ -123,7 +123,7 @@
 "consumo_TT_valorCompensa":"Indique o prezo en euros sen IVE co que o comerciante paga a electricidade non consumida",
 "consumo_TT_ficheroTarifas":"O usuario pode personalizar un ficheiro cos prezos que desexa ao cumprir o formato dado no exemplo",
 "consumo_LBL_ficheroTarifas":"Ficheiro de taxa local (ver exemplo)",
-"parametros_LBL_conversionAreakWp":"KWP que se pode instalar por metro cadrado dispoñible",
+"parametros_LBL_conversionAreakWp":"Metros cadrados necesarios por cada kWp instalados",
 "parametros_TT_conversionAreakWp":"Este valor utilizarase para saber cantos KWP se poden instalar nunha área definida. KWP máximo = área en metros cadrados / Este parámetro",
 "parametros_LBL_impuestoElectrico":"Imposto eléctrico en %",
 "parametros_TT_impuestoElectrico":"O imposto especial sobre a electricidade",

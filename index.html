@@ -90,9 +90,7 @@
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
     <!-- jspdf -->
-<!--     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.8.0/html2pdf.bundle.min.js"></script> -->
-<script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
-<!--     <script src="./js/jspdf.debug.js"></script> -->
+    <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
     <script src='https://html2canvas.hertzen.com/dist/html2canvas.min.js'></script>
     <script src="https://unpkg.com/jspdf-autotable@3.5.22/dist/jspdf.plugin.autotable.js"></script>
 
@@ -706,6 +704,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body" style="background-color:rgb(169, 248, 206)">
+                    <p data-i18n="parametros_LBL_descripcion"></p>
                     <div class="container-fluid">
                         <div class="row mb-3">
                             <label for="conversionAreakWp" class="col-md-5 col-form-label tDyn" data-i18n="parametros_LBL_conversionAreakWp"
@@ -788,7 +787,7 @@
 
     <!-- formulario modal de contacto -->
     <div class="modal fade" id="formularioContacto" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-lg" id="modalForm">
             <div class="modal-content">
                 <div class="modal-header bg-info">
                     <h5 class="modal-title" id="tituloContacto" data-i18n="main_TAB_contacto"></h5>
@@ -839,7 +838,8 @@
                         </div>
                         <div class="row mb-3">
                             <label for="mensaje" class="col-md-2 col-form-label" data-i18n="contacto_LBL_mensaje"></label>
-                            <div class="col-md-9"><textarea class="form-control" name="mensaje" rows="3" required></textarea></div>
+                            <div class="col-md-9"><textarea class="form-control" name="mensaje" rows="3" id="mensaje" required>
+                            </textarea></div>
                         </div>
                         <button type="submit" value="Send" class="btn btn-primary" data-i18n="contacto_LBL_enviar"></button>
                     </form>

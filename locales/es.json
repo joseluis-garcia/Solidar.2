@@ -132,7 +132,7 @@
 
 
 	"parametros_LBL_descripcion":"Configuración de parámetros de la aplicación. Los cambios en estos valores no implican un recálculo de todo el conjunto, es necesario volver a la pestaña Proyecto y calcular.",
-	"parametros_LBL_conversionAreakWp":"kWp que se pueden instalar por metro cuadrado disponible",
+	"parametros_LBL_conversionAreakWp":"metros cuadrados necesarios por cada kWp instalado",
 	"parametros_TT_conversionAreakWp":"Este valor se utilizará para saber cuantos kWp se pueden instalar en un area definida. kWp maximo = area en metros cuadrados / este parametro",
 	"parametros_LBL_impuestoElectrico":"Impuesto eléctrico en %",
 	"parametros_TT_impuestoElectrico":"El impuesto especial sobre la electricidad",
@@ -344,7 +344,8 @@
 	"graficos_LBL_cambiaPaneles":"Click cambia a {{paneles}} paneles",
 	"graficos_LBL_paneles":"Paneles",
 	"graficos_LBL_panelesActuales":"Paneles actuales {{paneles}}",
-
+	"graficos_LBL_numeroMaximoPaneles":"Maximo {{paneles}}",
+	"graficos_LBL_maximoPanelesExplicacion":"Limite basado en superficie disponible de {{area}} m<sup>2",
 	"rendimiento_MSG_errorFetch":"Error ejecutando fetch en PVGIS. Respuesta:",
 	"rendimiento_MSG_obteniendoPVGISdata":"Obteniendo datos de PVGIS",
 

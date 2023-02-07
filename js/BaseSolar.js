@@ -37,9 +37,9 @@ export default class BaseSolar extends Base {
 
   async cargaRendimiento() {
     if (this.rendimientoCreado) {
-      delete this.rendimiento;
+      this.rendimiento = {};
       this.rendimientoCreado = false;
-    }
+    } 
     this.rendimiento = new Rendimiento( this);
   }
 

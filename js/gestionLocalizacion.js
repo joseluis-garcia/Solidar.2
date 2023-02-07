@@ -121,7 +121,7 @@ function inicializaEventos () {
   
   // Vector es el Layer que muestra los features mantenidos en la fuente origenDatosSolidar
   origenDatosSolidar = new ol.source.Vector({wrapX: false});
-  const vector = new ol.layer.Vector({ source: origenDatosSolidar,
+  var vector = new ol.layer.Vector({ source: origenDatosSolidar,
     style: new ol.style.Style({
       stroke: new ol.style.Stroke({
         fillcolor: [0,250,0,0.5],
@@ -133,6 +133,7 @@ function inicializaEventos () {
       }),
     }),
   });
+  vector.set('name', 'DatosSolidar');
   
   // SAT es el layer con la imagen satelite provista por ESRI via arcgisonline
   const SAT = new ol.layer.Tile({
@@ -241,11 +242,14 @@ async function importa( datosImportar) {
   origenDatosSolidar.addFeatures(impFeatures);
 
   // Actualizamos los labels del mapa con el nombre de la correspondiente base
+  TCB.areaTotal = 0;
   datosImportar.bases.forEach( (base) => {
     const label = origenDatosSolidar.getFeatureById("AreaSolar.label." + base.id);
     setLabel (label, base.nombre, TCB.baseLabelColor,TCB.baseLabelBGColor);
     const markerAcimut = origenDatosSolidar.getFeatureById("AreaSolar.symbol."+base.id);
     if (markerAcimut) markerAcimut.setStyle(TCB.markerAcimutSymbol);
+      
+    TCB.map.getView().fit(origenDatosSolidar.getExtent());
 
     let nuevaArea = {};
     nuevaArea.nombre = base.nombre;
@@ -259,9 +263,9 @@ async function importa( datosImportar) {
     nuevaArea.angulosOptimos = base.angulosOptimos;
     nuevaArea.areaReal = base.areaReal;
     nuevaArea.area = base.area;
-
     let nuevaBase = new BaseSolar(nuevaArea);
     TCB.bases.push( nuevaBase);
+    TCB.areaTotal += base.areaReal;
     nuevaFilaEnTablaAreaSolar (nuevaBase);
   });
 }
@@ -280,11 +284,13 @@ async function valida () {
   //Carga rendimientos de cada base que lo requiera asincronicamente
   //La propiedad requierePVGIS es gestionada en GestionLocalizacion y se pone a true cuando cambia algun angulo
   try {
+    TCB.areaTotal = 0;
     TCB.bases.forEach (base => {
         if (base.requierePVGIS) {
           UTIL.debugLog("Base requiere PVGIS:", base);
           TCB.requiereOptimizador = true;
           base.cargaRendimiento();
+          TCB.areaTotal += base.areaReal;
         }
     })
     return true;
