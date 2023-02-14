@@ -93,7 +93,7 @@
 "mapa_TT_area":"Botón para crear unha nova base para instalar paneis",
 "mapa_LBL_consumo":"Consumo",
 "mapa_MSG_definePosicionMapa":"Debe definir polo menos unha base no mapa antes de continuar",
-"consumo_MSG_descripcionFuentes":"Hai dúas formas de proporcionar a información do perfil do consumidor <li> cun ficheiro CSV obtido do sitio web da súa compañía de distribución. Vexa as instrucións aquí </a> </li> <li> Usando o perfil estándar de REE segundo <a href = 'https: //www.boe.es/buscar/act.php? id = boe-a-2021- 21395' target = '_ blank'> Resolución do 23 de decembro de 2021, da Dirección Xeral de Política Enerxética e Minesboe </a> e o consumo anual estimado da instalación </li> <p> Debe escoller un ou outro segundo a información que ten. </p>",
+"consumo_MSG_descripcionFuentes":"Hai dúas formas de proporcionar a información do perfil do consumidor <li> cun ficheiro CSV obtido do sitio web da súa compañía de distribución. Vexa as instrucións aquí </a> </li> <li> Usando o perfil estándar de REE segundo <a href='https://www.ree.es/es/clientes/generador/gestion-medidas-electricas/consulta-perfiles-de-consumo' target='_blank'>perfís de consumo final en función dos perfís iniciais en función da demanda real do sistema</a> e o consumo anual estimado da instalación </li> <p> Debe escoller un ou outro segundo a información que ten. </p>",
 "consumo_LBL_ID":"Id",
 "consumo_LBL_nombre":"Identificación do consumo",
 "consumo_TT_nombre":"Identiza o nome deste consumo para futuras referencias",

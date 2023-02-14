@@ -22,11 +22,11 @@ export default class Consumo {
       this.fuente = puntoConsumo.fuente;
       this.potenciaREE = puntoConsumo.potenciaREE;
       this.ficheroCSV = puntoConsumo.ficheroCSV;
-      this.nombreTarifa = puntoConsumo.nombreTarifa;
+      //this.nombreTarifa = puntoConsumo.nombreTarifa;
       this.territorio = puntoConsumo.territorio;
       this.numeroRegistros = puntoConsumo.numeroRegistros;
-      UTIL.debugLog("Cargando consumo con tarifa: "+this.nombreTarifa +"-"+this.territorio);
-      this.tarifa = new Tarifa(this.nombreTarifa, this.territorio);
+      UTIL.debugLog("Cargando consumo con tarifa: "+puntoConsumo.nombreTarifa +"-"+this.territorio);
+      this.tarifa = new Tarifa(puntoConsumo.nombreTarifa, this.territorio);
       this.numeroDias = 0;
 
       if (!TCB.importando) {
@@ -103,7 +103,7 @@ export default class Consumo {
           var decimalCaracter;
           if (this.fuente === "REE") {
             decimalCaracter = ".";
-            campo = this.nombreTarifa; 
+            campo = this.tarifa.nombreTarifa;
           }
           if (this.fuente === "CSV") {
             decimalCaracter = ","; 

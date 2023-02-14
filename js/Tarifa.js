@@ -8,7 +8,7 @@ export default class Tarifa {
  * 
  * @param {string} nombreTarifa El formato del nombre de la tarifa es X.0TD-R 
  *    nombreTarifa = [ 2.0TD, 3.0TD]
- *    territorio = ['Peninsula', 'Islas Baleares', 'Canarias', 'Melilla', 'Ceuta']                                       
+ *    territorio = ['Península', 'Islas Baleares', 'Canarias', 'Melilla', 'Ceuta']                                       
  */
   constructor(nombreTarifa, territorio) {
     this.nombreTarifa = nombreTarifa;

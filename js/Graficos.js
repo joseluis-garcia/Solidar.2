@@ -484,7 +484,7 @@ console.log(paneles);
                 },
             ]
         };
-
+        
         if (numeroMaximoPaneles === paneles[4]) {
             layout.annotations.push(
                 {
@@ -494,7 +494,7 @@ console.log(paneles);
                     showarrow: true,
                     arrowhead: 3,
                     xanchor: 'right',
-                    hovertext: i18next.t("graficos_LBL_maximoPanelesExplicacion", {'area':TCB.areaTotal}),
+                    hovertext: i18next.t("graficos_LBL_maximoPanelesExplicacion", {'area':UTIL.formatoValor('superficie',TCB.areaTotal)}),
                     ax: -20,
                     ay: -5
                 });

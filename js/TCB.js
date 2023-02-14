@@ -33,7 +33,7 @@ const TCB = {
     baseLabelColor: [0, 0, 0, 1], 
     baseLabelBGColor: [168, 50, 153, 0.1],
     nombreProyecto: "",
-    territorio: "Peninsula",
+    territorio: "Península",
     pdf : "",
 
     consumoCreado : false,
@@ -52,7 +52,7 @@ const TCB = {
             precios: [0.187, 0.357, 0.293, 0.241, 0, 0, 0],
             horas: [3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2]
         },
-        '3.0TD-Peninsula' : { 
+        '3.0TD-Península' : { 
             precios: [0.187, 0.355, 0.324, 0.296, 0.269, 0.246, 0.239],
             horas: [
                 [6, 6, 6, 6, 6, 6, 6, 6, 2, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 2, 2],
@@ -142,7 +142,7 @@ const TCB = {
         impuestoElectrico : 5.113,
         IVAenergia : 5.0,
         IVAinstalacion : 21.0,
-        perdidasSistema : 14,
+        perdidasSistema : 20,
         interesVAN : 3,
         tecnologia : 'crystSi',
         potenciaPanelInicio : 0.450
@@ -163,7 +163,7 @@ const TCB = {
         'Comunitaria' : {'<=10kWp':710, '>10kWp':535}
     },
     conversionCO2 : {
-        'Peninsula' : {
+        'Península' : {
             'renovable' : 0.331,
             'norenovable' : 0.472
         },

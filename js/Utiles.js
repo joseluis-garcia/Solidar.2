@@ -7,6 +7,7 @@ var campos = {
   "porciento": {"unidad":"%", "decimales":2, "salvar":true, "mostrar":true},
   "peso": {"unidad":" Kg", "decimales": 2, "salvar":true, "mostrar":true},
   "dinero": {"unidad": " €", "decimales": 0, "salvar":true, "mostrar":true},
+  "superficie":{"unidad": " m² "},
 // Especificos
   "impuestoTotal":{"unidad": "%", "decimales": 0, "salvar":false, "mostrar":true},
   "consumoOriginalAnual":{"unidad": "%", "decimales": 0, "salvar":false, "mostrar":true},
@@ -40,8 +41,8 @@ var campos = {
   "potenciaREE": {"unidad": " kWh", "decimales":2, "salvar":true, "mostrar":true},
   "id": {"unidad":"", "decimales":0, "salvar":true, "mostrar":true},
   "tipo": {"unidad":"", "decimales":0, "salvar":false, "mostrar":false},
-  "area": {"unidad": " m<sup>2</sup>", "decimales":2, "salvar":true, "mostrar":true},
-  "areaReal": {"unidad": " m<sup>2</sup>", "decimales":2, "salvar":true, "mostrar":true},
+  "area": {"unidad": " m²", "decimales":2, "salvar":true, "mostrar":true},
+  "areaReal": {"unidad": " m²", "decimales":2, "salvar":true, "mostrar":true},
   "nombre": {"unidad":"", "decimales":0, "salvar":true, "mostrar":true},
 	"potenciaMaxima": {"unidad": " kWp", "decimales":2, "salvar":true, "mostrar":true},
 	"inclinacionPaneles": {"unidad":"º","decimales":2, "salvar":true, "mostrar":true},

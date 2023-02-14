@@ -77,7 +77,7 @@ function muestraBalanceEnergia() {
     muestra("energiaSobrante%Produccion", "",formatoValor('porciento', TCB.balance.excedenteAnual / TCB.produccion.totalAnual * 100));
     muestra("energiaFaltante", "", formatoValor('energia', TCB.balance.deficitAnual)); 
     muestra("energiaFaltante%Consumo", "", formatoValor('porciento', TCB.balance.deficitAnual / TCB.consumo.totalAnual * 100));
-    muestra("fuente", "Datos de conversion para ",[TCB.territorio],"");
+    muestra("fuente", "Datos de conversión para ",[TCB.territorio],"");
     muestra("CO2AnualRenovable", "",formatoValor('peso',TCB.conversionCO2[TCB.territorio].renovable * TCB.produccion.totalAnual));
     muestra("CO2AnualNoRenovable", "",formatoValor('peso',TCB.conversionCO2[TCB.territorio].norenovable * TCB.produccion.totalAnual));
     muestra("porcientoEnergiaAhorradaGenerada", "",formatoValor('porciento',TCB.consumo.totalAnual / TCB.produccion.totalAnual * 100));

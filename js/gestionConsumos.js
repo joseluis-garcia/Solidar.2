@@ -294,12 +294,7 @@ async function nuevaFilaEntablaConsumo(tablaConsumos, consumo) {
   cell.innerHTML = '<input type="text" class="text-end" value="'+consumo.nombre+'">';
   cell.addEventListener('change', (evt) => {cambioNombreConsumo (evt.target)});
 
-  /* // Escribimos las coordenadas en la tabla para cuando tengamos geoPuntos de consumo
-  cell = row.insertCell();
-  cell.id = 'PuntoConsumo.lonlat.'+consumo.id;
-  cell.innerHTML = consumo.lonlat; */
-
-  // Seleccion del tipo de información disponible para el perfil de este consumo
+  // Seleccion dela fuente de información disponible para el perfil de este consumo
   cell = row.insertCell();
   cell.id = 'PuntoConsumo.fuente.'+consumo.id
   tmpHTML = '<select class="form-select col-md-2 tDyn" id="' + cell.id + '" value=' + consumo.fuente;
@@ -321,17 +316,20 @@ async function nuevaFilaEntablaConsumo(tablaConsumos, consumo) {
   cell.id = "PuntoConsumo.ficheroCSV."+consumo.id;
 
   if (consumo.ficheroCSV === "CSVImportado") {
-    tmpHTML = '<label id="nombreFicheroCSV">Datos de consumo importados</label>';
+    tmpHTML = '<label>Datos de consumo importados</label>';
   } else if (consumo.ficheroCSV === null) {
-    tmpHTML = '<label id="nombreFicheroCSV">Seleccione fichero</label>';
+    tmpHTML = '<label>Seleccione fichero</label>';
   } else {
-    tmpHTML = '<label id="nombreFicheroCSV">'+consumo.ficheroCSV.name+'</label>';
+    tmpHTML = '<label>' + consumo.ficheroCSV.name + '</label>';
   }
-  tmpHTML += `<button class="btn btn-default tDyn pull-right" type="button" id="exportar"
+  tmpHTML += `<button class="btn btn-default tDyn pull-right" type="button" id="CSVFile"
   data-bs-toggle="tooltip" data-bs-placement="top" name="main_TT_guardar">
   </button>`;
   cell.innerHTML = tmpHTML;
   cell.addEventListener('click', async (evt) => {
+    setActivo(evt.target);
+    if (consumoActivo.fuente !== "CSV") return false;
+
     let input = document.createElement('input');
     input.type = 'file';
     input.accept = '.csv';
@@ -341,6 +339,7 @@ async function nuevaFilaEntablaConsumo(tablaConsumos, consumo) {
       cargaCSV (evt, input.files[0]);
       };
     input.click();
+    input.remove();
   });
 
   // Seleccion de la tarifa
@@ -355,21 +354,42 @@ async function nuevaFilaEntablaConsumo(tablaConsumos, consumo) {
   cell.addEventListener('change', (evt) => {cambioTarifa (evt.target)});
 }
 
-function cambioTarifa (evento) {
+/**
+ * Función para procesar el cambio de Tarifa.
+ * El cambio afecta a los precios por rango horario y en el caso que el perfil sea de tipo REE tambien a los consumos 
+ * especificos de cada dia
+ * @param {Event}} evento generado desde "PuntoConsumo.nombreTarifa." + consumo.id
+ */
+async function cambioTarifa (evento) {
+
   setActivo(evento);
   consumoActivo.tarifa.nombreTarifa = evento.value;
   consumoActivo.tarifa.setTarifa( consumoActivo.tarifa.nombreTarifa, TCB.territorio);
+
   // Muestra las tarifas en el formulario de consumos
   for (let i=0; i<=6; i++){
     let cTarifa = document.getElementById("tarifaP"+i);
     cTarifa.value = TCB.consumos[0].tarifa.precios[i];    
   }
-
-  if (evento.value == "3.0TD") {
+  if (evento.value === "3.0TD") {
     document.getElementById("tablaTarifas3.0TD").style.display = "block";
   } else {
     document.getElementById("tablaTarifas3.0TD").style.display = "none";
   }
+
+  //En el caso que la fuente sea REE la tarifa afecta al perfil de consumo
+  if (consumoActivo.fuente = "REE") {
+    consumoActivo.ficheroCSV = await UTIL.getFileFromUrl(TCB.basePath + "datos/REE.csv");
+    await consumoActivo.loadCSV();
+    let consumoMsg = i18next.t('consumo_MSG_resumen', {registros: consumoActivo.numeroRegistros, 
+      desde: consumoActivo.fechaInicio.toLocaleDateString(),
+      hasta: consumoActivo.fechaFin.toLocaleDateString()});
+    document.getElementById("csvResumen").innerHTML = consumoMsg;
+    TCB.graficos.consumo_3D(consumoActivo, "graf_resumenConsumo", "graf_perfilDia");
+    document.getElementById('graf_resumenConsumo').style.display = "block";
+    document.getElementById("graf_perfilDia").style.display = "block";
+  }
+
 };
 
 async function cargaCSV (evento, ficheroCSV) {
@@ -383,7 +403,8 @@ async function cargaCSV (evento, ficheroCSV) {
                               desde: consumoActivo.fechaInicio.toLocaleDateString(),
                               hasta: consumoActivo.fechaFin.toLocaleDateString()});
     document.getElementById("csvResumen").innerHTML = consumoMsg;
-    document.getElementById("nombreFicheroCSV").innerHTML = ficheroCSV.name;
+
+    document.getElementById("PuntoConsumo.ficheroCSV."+featIDActivo).innerHTML = ficheroCSV.name;
     TCB.graficos.consumo_3D(consumoActivo, "graf_resumenConsumo", "graf_perfilDia");
     document.getElementById('graf_resumenConsumo').style.display = "block";
     document.getElementById("graf_perfilDia").style.display = "none";
@@ -415,21 +436,28 @@ function cambioNombreConsumo ( evento) {
   //setLabel( origenDatosSolidar.getFeatureById(componente), evento.value,[255, 255, 255, 1], [168, 50, 153, 0.6] );
 }
 
+/**
+ * 
+ * @param {Event} evento 
+ */
 function cambioFuente (evento) {
   setActivo(evento);
   document.getElementById('graf_resumenConsumo').style.display = "none";
   document.getElementById("graf_perfilDia").style.display = "none";
+
   var datoFichero = document.getElementById("PuntoConsumo.ficheroCSV."+featIDActivo);
   var datoPotencia = document.getElementById("PuntoConsumo.potenciaREE."+featIDActivo);
   consumoActivo.fuente = evento.value;
+
   consumoActivo.ficheroCSV = null;
   if (evento.value === "CSV") {
     datoPotencia.firstChild.value = "";
     datoPotencia.firstChild.disabled = true;
-    datoFichero.firstChild.disabled = false;
+    datoFichero.innerHTML = '<label>Seleccione fichero</label>';
+    datoFichero.disabled = false;
   } else if (evento.value === "REE") {
-    datoFichero.firstChild.value = null;
-    datoFichero.firstChild.disabled = true;
+    datoFichero.innerHTML = '<label>No Aplica</label>';
+    datoFichero.disabled = true;
     datoPotencia.firstChild.disabled = false;
     datoPotencia.firstChild.focus();
   }

@@ -248,8 +248,11 @@ async function importa( datosImportar) {
     setLabel (label, base.nombre, TCB.baseLabelColor,TCB.baseLabelBGColor);
     const markerAcimut = origenDatosSolidar.getFeatureById("AreaSolar.symbol."+base.id);
     if (markerAcimut) markerAcimut.setStyle(TCB.markerAcimutSymbol);
-      
-    TCB.map.getView().fit(origenDatosSolidar.getExtent());
+    
+    let mapView = TCB.map.getView();
+    mapView.fit(origenDatosSolidar.getExtent());
+    console.log(mapView.getZoom());
+    if (mapView.getZoom() > 18) mapView.setZoom(18);
 
     let nuevaArea = {};
     nuevaArea.nombre = base.nombre;
@@ -553,7 +556,7 @@ function setLabel ( feature, texto, colorArray, bgcolorArray) {
 /** 
   Vamos a verificar si el punto dado esta en España
   Devuelve false si no lo esta o alguno de los siguientes valores en caso de estar en España
-  ['Peninsula', 'Islas Baleares', 'Canarias', 'Melilla', 'Ceuta']
+  ['Península', 'Islas Baleares', 'Canarias', 'Melilla', 'Ceuta']
  * 
  * @param {array} point [Latitud, Longitud]
  * @returns false si no esta en España
@@ -576,7 +579,7 @@ async function verificaTerritorio (point) {
  * Realiza la llamada a Nominatim para determinar el territorio donde se encuentra point
  * @param {array} point [Latitud, Longitud] 
  * @returns false en caso de error en la llamada Nominatim
- * @returns territorio entre los siguientes valores: ['Peninsula', 'Islas Baleares', 'Canarias', 'Melilla', 'Ceuta'];
+ * @returns territorio entre los siguientes valores: ['Península', 'Islas Baleares', 'Canarias', 'Melilla', 'Ceuta'];
  */
 
 async function verificaTerritorioNominatim(point) {
@@ -593,7 +596,7 @@ async function verificaTerritorioNominatim(point) {
       if ( jsonTerritorio.address.country !== 'España') return false;
 
       // Verificamos si estamos en territorio insular. Por ahora solo damos un aviso porque no estan cargadas las configuraciones de las tarifas
-      let territorio = "Peninsula";
+      let territorio = "Península";
       let detalle = jsonTerritorio.display_name.split(",");
       const islas = ['Islas Baleares', 'Canarias', 'Melilla', 'Ceuta'];
       if (islas.includes(detalle[0])) territorio = detalle[0];

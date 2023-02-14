@@ -38,6 +38,7 @@ function inicializaEventosParametros() {
       reader.onload = (e) => {
         try {
           TCB.tarifas = JSON.parse(e.target.result);
+          
         } catch (err) {
           alert(i18next.t("precios_MSG_errorLecturaFicheroTarifas") + "\nParser.error: " + err);
         }

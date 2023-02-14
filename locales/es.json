@@ -32,7 +32,7 @@
 	"main_TT_siguiente": "Siguiente",
 	"main_TT_anterior": "Anterior",
 	"main_TAB_contacto":"Contacto",
-	"main_TAB_parametros":"Parametros de la aplicación",
+	"main_TAB_parametros":"Parámetros de la aplicación",
 	"main_TT_guardar":"Guardar proyecto",
 
 	"contacto_LBL_descripcion":"Envianos tus comentarios. Intentaremos atenderte lo antes posible",
@@ -77,7 +77,7 @@
 	"mapa_LBL_areaCorregida":"Area corregida",
 	"mapa_TT_areaCorregida":"Area real disponible corregida por la inclinación del tejado",
 	"mapa_LBL_maximaPotencia":"Max. kWp",
-	"mapa_TT_maximaPotencia":"Maxima potencia pico a instalar en esta area (Ver parametro de conversión",
+	"mapa_TT_maximaPotencia":"Maxima potencia pico a instalar en esta base (Ver parámetro de conversión",
 	"mapa_LBL_inclinacion":"Inclinación del panel",
 	"mapa_TT_inclinacion":"Grados de inclinación (entre 0 y 90) sobre el tejado que tendrán los paneles. Si se marca ‘Óptimo’ no hace falta indicar ningún valor",
 	"mapa_LBL_inclinacionOptima":"Inclinación óptima",
@@ -93,13 +93,13 @@
 	"mapa_TT_borraBase":"Borra la base seleccionada",
 	"mapa_MSG_territorio":"La aplicación solo es valida para España",
 	"mapa_MSG_insular":"Cuidado, esta usted en territorio no peninsular. Las tarifas 3.0TD no son las correctas.",
-	"mapa_LBL_area":"Area",
+	"mapa_LBL_area":"Base",
 	"mapa_TT_area":"Boton para crear una nueva base para instalar paneles",
 	"mapa_LBL_consumo":"Consumo",
 	"mapa_MSG_definePosicionMapa":"Debe definir al menos una base en el mapa antes de seguir",
 
 	"consumo_MSG_descripcionFuentes":
-	"Existen dos formas de proveer la información del perfil de consumo<li>con un fichero CSV obtenido desde la web de tu empresa distribuidora.<a href='./datos/Enlaces para descarga CSV individual.htm'target='_blank'>Ver instrucciones aqui</a></li><li>utilizando el perfil estandar de REE según <a href='https://www.boe.es/buscar/act.php?id=BOE-A-2021-21395' target='_blank'>Resolución de 23 de diciembre de 2021, de la Dirección General de Política Energética y MinasBOE</a> y el consumo anual estimado de la instalación</li><p>Debes elegir una u otra según la información que dispongas.</p>",
+	"Existen dos formas de proveer la información del perfil de consumo<li>con un fichero CSV obtenido desde la web de tu empresa distribuidora.<a href='./datos/Enlaces para descarga CSV individual.htm'target='_blank'>Ver instrucciones aquí </a></li><li>utilizando el perfil estandar de REE según <a href='https://www.ree.es/es/clientes/generador/gestion-medidas-electricas/consulta-perfiles-de-consumo' target='_blank'>perfiles finales de consumo a partir de los perfiles iniciales en función de la demanda real del sistema</a> y el consumo anual estimado de la instalación</li><p>Debes elegir una u otra según la información que dispongas.</p>",
 	"consumo_LBL_ID":"ID",
 	"consumo_LBL_nombre":"Identificación del consumo",
 	"consumo_TT_nombre":"Identique el nombre de este consumo para futuras referencias",
@@ -133,7 +133,7 @@
 
 	"parametros_LBL_descripcion":"Configuración de parámetros de la aplicación. Los cambios en estos valores no implican un recálculo de todo el conjunto, es necesario volver a la pestaña Proyecto y calcular.",
 	"parametros_LBL_conversionAreakWp":"metros cuadrados necesarios por cada kWp instalado",
-	"parametros_TT_conversionAreakWp":"Este valor se utilizará para saber cuantos kWp se pueden instalar en un area definida. kWp maximo = area en metros cuadrados / este parametro",
+	"parametros_TT_conversionAreakWp":"Este valor se utilizará para saber cuantos kWp se pueden instalar en una base concreta. kWp máximo = area en metros cuadrados / este parámetro",
 	"parametros_LBL_impuestoElectrico":"Impuesto eléctrico en %",
 	"parametros_TT_impuestoElectrico":"El impuesto especial sobre la electricidad",
 	"parametros_LBL_IVAenergia":"IVA aplicable a la energia en %",
@@ -253,7 +253,9 @@
 	"precios_LBL_pendiente":"Pendiente",
 	"precios_TT_pendiente":"Pendiente de amortizar al final del periodo",
 	"precios_LBL_VAN":"Valor actual neto (VAN)",
+	"precios_TT_VAN":"El rendimiento de la inversión en la instalación fotovoltaica transcurridos los años que se muestran en la tabla",
 	"precios_LBL_TIR":"Tasa interna de retorno (TIR)",
+	"precios_TT_TIR":"Indicador de la rentabilidad del proyecto fotovoltaico transcurridos los años que se muestran en la tabla",
 
 	"ayuda_TIT_localizacion": "En esta pestaña se identifican datos de localización geográfica",
 	"ayuda_TIT_consumos": "En esta pestaña se identifican datos de tarifas y consumos antes de la instalación",
@@ -318,7 +320,7 @@
 	"resultados_LBL_tituloPropiedades":"Propiedades",
 	"resultados_LBL_basePropiedades":"Base: {{id}}",
 	"resultados_LBL_participacion":"Participación",
-	"resultados_MSG_excesoPotencia":"Hay un exceso de potencia en esta base en función del area dispoble",
+	"resultados_MSG_excesoPotencia":"Hay un exceso de potencia en esta base en función del area disponible",
 
 	"graficos_LBL_descripcion": "Área de gráficos disponibles",
 	"graficos_LBL_balanceConsumo": "Balance mensual de consumo con {{potencia}} instalados",
@@ -344,8 +346,8 @@
 	"graficos_LBL_cambiaPaneles":"Click cambia a {{paneles}} paneles",
 	"graficos_LBL_paneles":"Paneles",
 	"graficos_LBL_panelesActuales":"Paneles actuales {{paneles}}",
-	"graficos_LBL_numeroMaximoPaneles":"Maximo {{paneles}}",
-	"graficos_LBL_maximoPanelesExplicacion":"Limite basado en superficie disponible de {{area}} m<sup>2",
+	"graficos_LBL_numeroMaximoPaneles":"Máximo {{paneles}}",
+	"graficos_LBL_maximoPanelesExplicacion":"Limite basado en superficie disponible de {{area}}",
 	"rendimiento_MSG_errorFetch":"Error ejecutando fetch en PVGIS. Respuesta:",
 	"rendimiento_MSG_obteniendoPVGISdata":"Obteniendo datos de PVGIS",
 

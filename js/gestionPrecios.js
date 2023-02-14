@@ -161,7 +161,6 @@ async function graficoAlternativas() {
   calculaResultados();
 
   //Buscamos punto en el que la produccion represente el 80% del consumo anual total para definir el limite subvencion EU
-  console.log("Muestra plot alternativas");
   let i = 0;
   while (consvsprod[i] > 80) i++;
   let pendiente = (consvsprod[i] - consvsprod[i-1]) / (paneles[i] - paneles[i-1]);
