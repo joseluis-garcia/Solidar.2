@@ -187,8 +187,8 @@ function muestraTablaBases ( tablaDonde) {
       } else {
           baseActiva.instalacion.potenciaUnitaria = tmpPotenciaUnitaria;
           baseActiva.instalacion.paneles = tmpPaneles;
-          TCB.totalPaneles = TCB.bases.reduce((a, b) => { a + b.instalacion.paneles }, 0);
-          console.log(TCB.totalPaneles);
+          TCB.totalPaneles = TCB.bases.reduce((a, b) => {
+            return a + b.instalacion.paneles }, 0);
           calculaResultados();
           prepara();
       }

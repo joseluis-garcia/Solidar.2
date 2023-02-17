@@ -29,7 +29,9 @@ function inicializaEventos() {
 
 
     function modificaPrecioInstalacion(evento) {
+
       TCB.correccionPrecioInstalacion = 1 + parseFloat(evento.target.value) / 100;
+
       TCB.bases.forEach( (base) => {
         base.produccion.precioInstalacionCorregido = base.produccion.precioInstalacion * TCB.correccionPrecioInstalacion;
       });
@@ -130,6 +132,7 @@ async function graficoAlternativas() {
   TCB.bases.forEach ( (base) => { numeroMaximoPaneles +=  Math.trunc(base.potenciaMaxima / base.instalacion.potenciaUnitaria)});
 
   // El maximo numero de paneles a graficar es el doble de lo propuesto o el maximo numero de paneles
+
   let maximoPanelesEnX = numeroMaximoPaneles > (2 * TCB.totalPaneles) ? (2 * TCB.totalPaneles) : numeroMaximoPaneles;
   var intentos = [1, 0.25*maximoPanelesEnX, 0.5*maximoPanelesEnX,  0.75*maximoPanelesEnX, maximoPanelesEnX]; //, TCB.totalPaneles];
   intentos.sort((a, b) => a - b);

@@ -58,8 +58,8 @@ export default class Produccion {
         
         // En el caso de Solidar.2 se asume que toda la instalación se hace junta independientemente de que existan mas de una base
         // En ese caso se asume que el precio de la instalacion será el de la potencia total y no la suma de cada una de las base
-/*      this.precioInstalacion += TCB.bases[i].instalacion.precioInstalacion;
-        this.precioInstalacionCorregido += TCB.bases[i].instalacion.precioInstalacionCorregido; */
+        this.precioInstalacion += TCB.bases[i].instalacion.precioInstalacion;
+        this.precioInstalacionCorregido += TCB.bases[i].instalacion.precioInstalacionCorregido; 
       }
 
 // El precio de la instalación no lo obtenemos como la suma de los precios de cada base sino como si fuera una unica base con 

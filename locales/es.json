@@ -99,7 +99,7 @@
 	"mapa_MSG_definePosicionMapa":"Debe definir al menos una base en el mapa antes de seguir",
 
 	"consumo_MSG_descripcionFuentes":
-	"Existen dos formas de proveer la información del perfil de consumo<li>con un fichero CSV obtenido desde la web de tu empresa distribuidora.<a href='./datos/Enlaces para descarga CSV individual.htm'target='_blank'>Ver instrucciones aquí </a></li><li>utilizando el perfil estandar de REE según <a href='https://www.ree.es/es/clientes/generador/gestion-medidas-electricas/consulta-perfiles-de-consumo' target='_blank'>perfiles finales de consumo a partir de los perfiles iniciales en función de la demanda real del sistema</a> y el consumo anual estimado de la instalación</li><p>Debes elegir una u otra según la información que dispongas.</p>",
+	"Existen dos formas de proveer la información del perfil de consumo<li>con un fichero CSV obtenido desde la web de tu empresa distribuidora.<a href='./datos/Enlaces para descarga CSV individual.htm'target='_blank'> Ver instrucciones aquí </a></li><li>utilizando el perfil estandar de REE según <a href='https://www.ree.es/es/clientes/generador/gestion-medidas-electricas/consulta-perfiles-de-consumo' target='_blank'>perfiles finales de consumo a partir de los perfiles iniciales en función de la demanda real del sistema</a> y el consumo anual estimado de la instalación</li><p>Debes elegir una u otra según la información que dispongas.</p>",
 	"consumo_LBL_ID":"ID",
 	"consumo_LBL_nombre":"Identificación del consumo",
 	"consumo_TT_nombre":"Identique el nombre de este consumo para futuras referencias",

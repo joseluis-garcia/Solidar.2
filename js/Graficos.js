@@ -387,7 +387,6 @@ export default class Graficos {
     }
 
     plotAlternativas (donde, potencia_kWp, paneles, TIR, autoconsumo, autosuficiencia, precioInstalacion, ahorroAnual, limiteSubvencion) {
-console.log(paneles);
         var trace_TIR = {
             x: paneles,
             y: TIR,
